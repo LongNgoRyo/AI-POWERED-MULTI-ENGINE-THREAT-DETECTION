@@ -66,6 +66,90 @@ def quarantine_file(file_path: str, hashes: Dict[str, str] = None) -> Dict[str, 
         "message": f"Đã cách ly an toàn tệp {file_name} vào Vùng Bảo Vệ (Vault). File đã được vô hiệu hóa mã nhị phân."
     }
 
+def list_quarantine_vault() -> List[Dict[str, Any]]:
+    """Liệt kê toàn bộ các tệp tin đang được lưu trữ an toàn trong Vùng Cách Ly (Quarantine Vault)."""
+    items = []
+    if not os.path.exists(VAULT_DIR):
+        return items
+
+    for filename in os.listdir(VAULT_DIR):
+        if filename.endswith(".meta.json"):
+            meta_path = os.path.join(VAULT_DIR, filename)
+            try:
+                with open(meta_path, "r", encoding="utf-8") as f:
+                    meta = json.load(f)
+                
+                sha256 = meta.get("sha256")
+                quarantined_file = os.path.join(VAULT_DIR, f"{sha256}.quarantined")
+                meta["vault_file_exists"] = os.path.exists(quarantined_file)
+                items.append(meta)
+            except Exception:
+                continue
+
+    # Sắp xếp mới nhất lên đầu
+    items.sort(key=lambda x: x.get("quarantined_at", ""), reverse=True)
+    return items
+
+def restore_quarantined_file(sha256: str, target_path: str = None) -> Dict[str, Any]:
+    """Phục hồi tệp tin từ Vùng Cách Ly (Giải mã XOR và khôi phục lại đường dẫn gốc)."""
+    vault_file_path = os.path.join(VAULT_DIR, f"{sha256}.quarantined")
+    vault_meta_path = os.path.join(VAULT_DIR, f"{sha256}.meta.json")
+
+    if not os.path.exists(vault_file_path) or not os.path.exists(vault_meta_path):
+        return {"success": False, "error": "Không tìm thấy tệp tin trong Vùng Cách Ly."}
+
+    try:
+        with open(vault_meta_path, "r", encoding="utf-8") as f:
+            meta = json.load(f)
+
+        dest_path = target_path or meta.get("original_path")
+        if not dest_path:
+            dest_path = os.path.join(os.path.expanduser("~"), "Downloads", meta.get("original_name", "restored_file"))
+
+        # Tạo thư mục đích nếu chưa có
+        os.makedirs(os.path.dirname(os.path.abspath(dest_path)), exist_ok=True)
+
+        with open(vault_file_path, "rb") as f:
+            enc_data = f.read()
+
+        # Giải mã XOR
+        raw_data = xor_transform(enc_data)
+
+        with open(dest_path, "wb") as f:
+            f.write(raw_data)
+
+        # Xóa khỏi Vault
+        os.remove(vault_file_path)
+        os.remove(vault_meta_path)
+
+        return {
+            "success": True,
+            "restored_path": dest_path,
+            "message": f"Đã phục hồi thành công tệp tin về vị trí: {dest_path}"
+        }
+    except Exception as e:
+        return {"success": False, "error": f"Lỗi khi khôi phục tệp: {str(e)}"}
+
+def delete_quarantined_file(sha256: str) -> Dict[str, Any]:
+    """Xóa vĩnh viễn tệp tin khỏi Vùng Cách Ly Vault."""
+    vault_file_path = os.path.join(VAULT_DIR, f"{sha256}.quarantined")
+    vault_meta_path = os.path.join(VAULT_DIR, f"{sha256}.meta.json")
+
+    deleted_files = 0
+    if os.path.exists(vault_file_path):
+        os.remove(vault_file_path)
+        deleted_files += 1
+
+    if os.path.exists(vault_meta_path):
+        os.remove(vault_meta_path)
+        deleted_files += 1
+
+    if deleted_files > 0:
+        return {"success": True, "message": "Đã xóa vĩnh viễn tệp tin khỏi Vùng Cách Ly."}
+    else:
+        return {"success": False, "error": "Tệp tin không tồn tại trong Vùng Cách Ly."}
+
+
 def disarm_pdf(file_path: str, output_path: str = None) -> Dict[str, Any]:
     """
     Công nghệ Khử Độc Tài Liệu (Content Disarm & Reconstruction - CDR):

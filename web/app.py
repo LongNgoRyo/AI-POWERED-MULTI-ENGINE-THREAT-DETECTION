@@ -156,7 +156,10 @@ async def get_system_status():
 # Remediation & Incident Response Endpoints (Khắc phục sự cố)
 # =========================================================================
 from fastapi.responses import FileResponse
-from src.remediation_engine import quarantine_file, disarm_pdf, shred_file
+from src.remediation_engine import (
+    quarantine_file, disarm_pdf, shred_file,
+    list_quarantine_vault, restore_quarantined_file, delete_quarantined_file
+)
 from src.pdf_report_generator import generate_pdf_incident_report
 
 class RemediationRequest(BaseModel):
@@ -180,6 +183,29 @@ async def api_shred_file(req: RemediationRequest):
     """Tiêu hủy tệp tin bảo mật vĩnh viễn theo chuẩn DoD 5220.22-M."""
     res = shred_file(req.file_path)
     return JSONResponse(content=res)
+
+@app.get("/api/vault/list")
+async def api_list_vault():
+    """Liệt kê toàn bộ danh sách tệp tin đang được cách ly trong Vùng Bảo Vệ Vault."""
+    items = list_quarantine_vault()
+    return JSONResponse(content={"items": items, "count": len(items)})
+
+class VaultActionRequest(BaseModel):
+    sha256: str
+    target_path: str = None
+
+@app.post("/api/vault/restore")
+async def api_restore_vault_file(req: VaultActionRequest):
+    """Khôi phục tệp tin đã bị cách ly trở lại thư mục ban đầu."""
+    res = restore_quarantined_file(req.sha256, req.target_path)
+    return JSONResponse(content=res)
+
+@app.post("/api/vault/delete")
+async def api_delete_vault_file(req: VaultActionRequest):
+    """Xóa vĩnh viễn tệp tin trong Vùng Cách Ly Vault."""
+    res = delete_quarantined_file(req.sha256)
+    return JSONResponse(content=res)
+
 
 class ExportPdfRequest(BaseModel):
     scan_result: dict
