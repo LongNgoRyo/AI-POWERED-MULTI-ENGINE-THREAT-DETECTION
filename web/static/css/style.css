@@ -300,42 +300,71 @@ body {
   font-size: 1.05rem;
 }
 
-/* Scanner Layout Grid */
-.scanner-grid {
-  display: grid;
-  grid-template-columns: 340px 1fr;
-  gap: 1.5rem;
-  align-items: start;
+/* Scanner Layout: Vertical Flow (Ingestion Area -> Dedicated Full-Width Report Box) */
+.scanner-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
 }
 
-@media (max-width: 1080px) {
-  .scanner-grid {
+.scanner-ingestion-card {
+  width: 100%;
+  margin-bottom: 2rem;
+}
+
+.ingestion-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.8rem;
+  align-items: stretch;
+}
+
+@media (max-width: 960px) {
+  .ingestion-grid {
     grid-template-columns: 1fr;
   }
 }
 
-#resultsCard {
-  scroll-margin-top: 90px;
+.ingestion-left, .ingestion-right {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
-/* Modern Split Multi-Column Result Layout (Cột kép song song không cần cuộn) */
+/* Dedicated Report Box ("Ô Báo Cáo") */
+.report-box-card, #resultsCard {
+  width: 100%;
+  scroll-margin-top: 85px;
+  border: 1px solid rgba(0, 240, 255, 0.35);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 25px rgba(0, 240, 255, 0.08);
+  border-radius: var(--radius-xl);
+  transition: all 0.3s ease;
+}
+
+/* Modern Split Multi-Column Result Layout inside Dedicated Report Box */
 .results-columns-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 1.5rem;
-  margin-top: 1.2rem;
+  gap: 1.8rem;
+  margin-top: 1.5rem;
   align-items: start;
+}
+
+@media (max-width: 1024px) {
+  .results-columns-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .result-column {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.2rem;
 }
 
 .column-card-title {
   font-family: var(--font-heading);
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.04em;
@@ -343,15 +372,9 @@ body {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  padding-bottom: 0.5rem;
+  padding-bottom: 0.6rem;
   border-bottom: 1px solid var(--border-subtle);
-  margin-bottom: 0.2rem;
-}
-
-@media (max-width: 1200px) {
-  .results-columns-grid {
-    grid-template-columns: 1fr;
-  }
+  margin-bottom: 0.4rem;
 }
 
 /* Glass Card */
@@ -458,9 +481,9 @@ body {
 
 /* Direct Path Input Form */
 .path-input-group {
-  margin-top: 1.5rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid var(--border-subtle);
+  margin-top: 0;
+  padding-top: 0;
+  border-top: none;
 }
 
 .path-input-group label {
@@ -474,10 +497,13 @@ body {
 .path-input-flex {
   display: flex;
   gap: 0.75rem;
+  align-items: center;
+  width: 100%;
 }
 
 .cyber-input {
   flex: 1;
+  min-width: 0;
   background: rgba(15, 23, 42, 0.9);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
@@ -509,6 +535,9 @@ body {
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
+  white-space: nowrap !important;
+  flex-shrink: 0 !important;
+  min-width: 125px;
 }
 
 .cyber-btn:hover {
@@ -534,16 +563,31 @@ body {
 
 /* Presets Bar */
 .presets-section {
-  margin-top: 1.2rem;
+  margin-top: 1.5rem;
+  padding-top: 1.2rem;
+  border-top: 1px solid var(--border-subtle);
 }
 
 .presets-title {
-  font-size: 0.75rem;
+  font-size: 0.78rem;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: var(--text-dim);
   margin-bottom: 0.6rem;
+}
+
+.preset-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.65rem;
+  margin-top: 0.8rem;
+}
+
+@media (max-width: 600px) {
+  .preset-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .preset-buttons {
@@ -553,20 +597,25 @@ body {
 }
 
 .preset-btn {
-  font-size: 0.75rem;
-  padding: 0.35rem 0.75rem;
+  font-size: 0.78rem;
+  padding: 0.6rem 0.85rem;
   border-radius: var(--radius-sm);
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid var(--border-subtle);
   color: var(--text-muted);
   cursor: pointer;
   transition: all 0.2s ease;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: left;
 }
 
 .preset-btn:hover {
   background: rgba(0, 240, 255, 0.1);
   border-color: var(--primary);
   color: #fff;
+  transform: translateY(-1px);
 }
 
 /* Results Display */
@@ -684,6 +733,18 @@ body {
   padding: 0.9rem 1.1rem;
   border-radius: var(--radius-md);
   border: 1px solid var(--border-subtle);
+}
+
+.meta-box.full-span {
+  grid-column: 1 / -1;
+}
+
+.mono-hash {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  letter-spacing: 0.04em;
+  word-break: break-all;
+  color: var(--primary);
 }
 
 .meta-label {

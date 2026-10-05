@@ -69,66 +69,73 @@
         </p>
       </div>
 
-      <div class="scanner-grid">
+      <div class="scanner-container">
         
-        <!-- Left: Upload & Input Panel -->
-        <div class="glass-card">
+        <!-- Khu Vực Tiếp Nhận & Quét File (Scan & Ingestion Center) -->
+        <div class="glass-card scanner-ingestion-card">
           <div class="card-header">
-            <h3 class="card-title"><span>📂</span> Kéo Thả Tệp Tin Quét Ngay</h3>
-            <span class="chip">Zero-install Web Engine</span>
+            <h3 class="card-title"><span>📂</span> Khu Vực Tiếp Nhận & Quét File Hệ Thống</h3>
+            <span class="chip">Sẵn sàng phân tích</span>
           </div>
 
-          <!-- Drag and Drop Zone -->
-          <div class="dropzone" id="dropzone">
-            <input type="file" id="fileInput" style="display: none;" />
-            <div class="dropzone-icon">📥</div>
-            <div class="dropzone-prompt">
-              <h3>Kéo thả tệp tin vào đây</h3>
-              <p>Hoặc <span style="color: var(--primary); text-decoration: underline; font-weight: 600;">chọn file từ máy của bạn</span></p>
+          <div class="ingestion-grid">
+            <!-- Cột Trái: Drag & Drop Zone -->
+            <div class="ingestion-left">
+              <div class="dropzone" id="dropzone">
+                <input type="file" id="fileInput" style="display: none;" />
+                <div class="dropzone-icon">📥</div>
+                <div class="dropzone-prompt">
+                  <h3>Kéo thả tệp tin vào đây</h3>
+                  <p>Hoặc <span style="color: var(--primary); text-decoration: underline; font-weight: 600;">duyệt file từ máy tính</span></p>
+                </div>
+                <div class="supported-chips">
+                  <span class="chip">.EXE</span>
+                  <span class="chip">.DLL</span>
+                  <span class="chip">.PDF</span>
+                  <span class="chip">.SYS / .SCR</span>
+                  <span class="chip">Mọi định dạng</span>
+                </div>
+              </div>
             </div>
-            <div class="supported-chips">
-              <span class="chip">.EXE</span>
-              <span class="chip">.DLL</span>
-              <span class="chip">.PDF</span>
-              <span class="chip">.SYS / .SCR</span>
-              <span class="chip">Mọi định dạng</span>
-            </div>
-          </div>
 
-          <!-- Local Path Scanner -->
-          <div class="path-input-group" style="margin-top: 1.2rem;">
-            <label for="localFilePath" style="font-size: 0.8rem; color: var(--text-dim); display: block; margin-bottom: 0.4rem;">Hoặc quét file qua đường dẫn trên máy (nếu chạy local):</label>
-            <div class="path-input-flex" style="display: flex; gap: 0.5rem;">
-              <input type="text" id="localFilePath" class="cyber-input" style="flex: 1;" placeholder="Ví dụ: samples/file_kiem_thu_mo_phong_doc_hai.pdf" />
-              <button id="btnScanPath" class="cyber-btn" style="white-space: nowrap;">Quét Ngay</button>
-            </div>
-          </div>
+            <!-- Cột Phải: Đường dẫn máy tính + Mẫu thử nhanh -->
+            <div class="ingestion-right">
+              <!-- Local Path Scanner -->
+              <div class="path-input-group">
+                <label for="localFilePath">Quét file qua đường dẫn trực tiếp trên máy tính:</label>
+                <div class="path-input-flex">
+                  <input type="text" id="localFilePath" class="cyber-input" placeholder="Ví dụ: C:\Windows\System32\notepad.exe" />
+                  <button id="btnScanPath" class="cyber-btn"><span class="btn-icon">⚡</span><span>Quét Ngay</span></button>
+                </div>
+              </div>
 
-          <!-- Quick Test Presets -->
-          <div class="presets-section" style="margin-top: 1.5rem; border-top: 1px solid var(--border-subtle); padding-top: 1rem;">
-            <div class="presets-title">⚡ Mẫu Phân Tích Trực Tuyến (Click xem ngay kết quả):</div>
-            <div class="preset-buttons" style="margin-top: 0.8rem; display: flex; flex-direction: column; gap: 0.5rem;">
-              <button class="preset-btn" data-preset="notepad" data-path="samples/file_lanh_tinh.exe">🟢 Notepad.exe (Lành tính chuẩn)</button>
-              <button class="preset-btn" data-preset="pdf_exploit" data-path="samples/file_kiem_thu_mo_phong_doc_hai.pdf">☣️ PDF Mã Nhúng (Mô phỏng JS/OpenAction)</button>
-              <button class="preset-btn" data-preset="spoofed" data-path="samples/file_doc_hai_gia_mao.docx">⚠️ Giả Mạo Đuôi (.DOCX ngụy trang PE)</button>
-              <button class="preset-btn" data-preset="wannacry">🔴 WannaCry (Mã độc tống tiền Ransomware)</button>
+              <!-- Quick Test Presets -->
+              <div class="presets-section">
+                <div class="presets-title">⚡ Mẫu Phân Tích Nhanh (Click để quét ngay):</div>
+                <div class="preset-grid">
+                  <button class="preset-btn" data-preset="notepad" data-path="samples/file_lanh_tinh.exe">🟢 Notepad.exe (Lành tính)</button>
+                  <button class="preset-btn" data-preset="pdf_exploit" data-path="samples/file_kiem_thu_mo_phong_doc_hai.pdf">☣️ PDF Mã Nhúng (JS/OpenAction)</button>
+                  <button class="preset-btn" data-preset="spoofed" data-path="samples/file_doc_hai_gia_mao.docx">⚠️ Giả Mạo Đuôi (.DOCX giả PE)</button>
+                  <button class="preset-btn" data-preset="wannacry">🔴 WannaCry (Ransomware)</button>
+                </div>
+              </div>
             </div>
           </div>
 
         </div>
 
-        <!-- Right: Real-time Scan Results Panel -->
-        <div class="glass-card" id="resultsCard">
+        <!-- Ô BÁO CÁO GIÁM ĐỊNH AN NINH & KHẮC PHỤC SỰ CỐ (DEDICATED FORENSIC REPORT BOX) -->
+        <div class="glass-card report-box-card" id="resultsCard">
           <div class="card-header">
-            <h3 class="card-title"><span>🔍</span> Báo Cáo Phân Tích Kỹ Thuật</h3>
+            <h3 class="card-title"><span>📋</span> Ô Báo Cáo Giám Định & Khắc Phục Sự Cố (Forensic Security Audit Report)</h3>
             <span id="scanStatusBadge" class="chip">Chờ phân tích</span>
           </div>
 
           <!-- Placeholder when no scan performed -->
           <div id="scanPlaceholder" class="scan-placeholder">
             <div class="placeholder-radar">🛡️</div>
-            <h4>Chưa có file nào được quét</h4>
-            <p style="margin-top: 0.5rem; font-size: 0.9rem;">Hãy kéo thả file từ máy tính của bạn hoặc nhấp vào một mẫu thử phía bên trái để AI tiến hành bóc tách đặc trưng.</p>
+            <h4>Chưa có dữ liệu giám định</h4>
+            <p style="margin-top: 0.5rem; font-size: 0.9rem;">Hãy kéo thả file hoặc chọn một mẫu kiểm thử phía trên để AI tiến hành bóc tách đặc trưng và xuất biên bản điều tra.</p>
           </div>
 
           <!-- Dynamic Results Content -->
@@ -149,13 +156,13 @@
               </div>
             </div>
 
-            <!-- Two-Column Side-By-Side Forensic Dashboard (Cột kép song song không cần cuộn) -->
+            <!-- Two-Column Side-By-Side Forensic Dashboard (Cột kép song song rộng rãi) -->
             <div class="results-columns-grid">
 
               <!-- CỘT 1: THÔNG SỐ ĐỊNH DANH & BẰNG CHỨNG NHỊ PHÂN -->
               <div class="result-column">
                 <div class="column-card-title">
-                  <span>📊</span> <span>Giám Định Nhị Phân & Thuộc Tính</span>
+                  <span>📊</span> <span>Giám Định Nhị Phân & Thuộc Tính Tệp Tin</span>
                 </div>
 
                 <!-- Hashes & File Info -->
@@ -166,15 +173,24 @@
                       <span id="resFileTypeBadge" class="chip">PE</span>
                     </div>
                     <div id="resFileName" class="meta-value">notepad.exe</div>
-                    <div id="resFileSize" style="font-size: 0.75rem; color: var(--text-dim); margin-top: 0.2rem;">214.5 KB</div>
+                    <div id="resFileSize" style="font-size: 0.75rem; color: var(--text-dim); margin-top: 0.2rem;">210.5 KB</div>
                   </div>
 
                   <div class="meta-box">
                     <div class="meta-label">
-                      <span>MÃ BĂM SHA-256</span>
-                      <button class="copy-btn" id="btnCopyHash" title="Sao chép SHA-256">📋 Copy</button>
+                      <span>Cấu Trúc Tệp Tin</span>
+                      <span class="chip" style="border-color: var(--safe); color: var(--safe);">Xác Thực</span>
                     </div>
-                    <div id="resSha256" class="meta-value" style="font-size: 0.75rem;">-</div>
+                    <div style="font-size: 0.85rem; font-weight: 700; color: #fff;">Magic Bytes Nhị Phân</div>
+                    <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.2rem;">Khớp phần mở rộng danh định</div>
+                  </div>
+
+                  <div class="meta-box full-span">
+                    <div class="meta-label">
+                      <span>MÃ BĂM TOÀN VẸN SHA-256</span>
+                      <button class="copy-btn" id="btnCopyHash" title="Sao chép SHA-256">📋 Sao Chép SHA-256</button>
+                    </div>
+                    <div id="resSha256" class="mono-hash">-</div>
                   </div>
                 </div>
 
