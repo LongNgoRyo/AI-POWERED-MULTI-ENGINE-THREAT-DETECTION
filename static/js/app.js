@@ -1001,7 +1001,7 @@ function exportClientSidePdfReport(scanResult) {
       head: [["Chien Luoc (Tactic)", "Ma ID", "Ten Ky Thuat", "Mo Ta Chi Tiet"]],
       body: mitreRows,
       theme: "striped",
-      headStyles: { fillColor: darkNavy, textColor: [255, 255, 255], fontSize: 8 },
+      headStyles: { fillColor: [226, 232, 240], textColor: [15, 23, 42], fontStyle: "bold", fontSize: 8 },
       styles: { fontSize: 7.5, cellPadding: 2 },
       columnStyles: {
         0: { cellWidth: 32 },

@@ -111,6 +111,15 @@ def generate_pdf_incident_report(scan_result: Dict[str, Any], behavior_analysis:
         textColor=colors.HexColor('#64748b')
     )
 
+    th_style = ParagraphStyle(
+        'TableHeader',
+        parent=body_style,
+        fontName=FONT_BOLD,
+        fontSize=8,
+        leading=11.5,
+        textColor=colors.HexColor('#0f172a')
+    )
+
     elements = []
 
     # =========================================================================
@@ -203,7 +212,10 @@ def generate_pdf_incident_report(scan_result: Dict[str, Any], behavior_analysis:
     if features_dict:
         elements.append(Paragraph("2. BÓC TÁCH ĐẶC TRƯNG CẤU TRÚC KỸ THUẬT (BINARY FEATURE INSPECTION)", h2_style))
         feat_items = list(features_dict.items())[:16]
-        feat_rows = []
+        feat_rows = [[
+            Paragraph("Đặc Trưng (Feature)", th_style), Paragraph("Giá Trị Trích Xuất", th_style),
+            Paragraph("Đặc Trưng (Feature)", th_style), Paragraph("Giá Trị Trích Xuất", th_style)
+        ]]
         for i in range(0, len(feat_items), 2):
             k1, v1 = feat_items[i]
             v1_str = f"{v1:.4f}" if isinstance(v1, float) else str(v1)
@@ -219,10 +231,13 @@ def generate_pdf_incident_report(scan_result: Dict[str, Any], behavior_analysis:
 
         feat_table = Table(feat_rows, colWidths=[150, 120, 150, 120])
         feat_table.setStyle(TableStyle([
-            ('BACKGROUND', (0, 0), (-1, -1), colors.HexColor('#ffffff')),
+            ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#e2e8f0')),
             ('BOX', (0, 0), (-1, -1), 1, colors.HexColor('#cbd5e1')),
-            ('INNERGRID', (0, 0), (-1, -1), 0.5, colors.HexColor('#f1f5f9')),
+            ('INNERGRID', (0, 0), (-1, -1), 0.5, colors.HexColor('#e2e8f0')),
             ('PADDING', (0, 0), (-1, -1), 3.5),
+            ('TOPPADDING', (0, 0), (-1, 0), 4.5),
+            ('BOTTOMPADDING', (0, 0), (-1, 0), 4.5),
+            ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor('#f8fafc')])
         ]))
         elements.append(feat_table)
 
@@ -266,10 +281,10 @@ def generate_pdf_incident_report(scan_result: Dict[str, Any], behavior_analysis:
     mitres = behavior_analysis.get("mitre_attacks", [])
     if mitres:
         mitre_data = [[
-            Paragraph("<b>Chiến Lược (Tactic)</b>", bold_body),
-            Paragraph("<b>Mã ID</b>", bold_body),
-            Paragraph("<b>Tên Kỹ Thuật (Technique)</b>", bold_body),
-            Paragraph("<b>Mô Tả Chi Tiết Nguy Cơ</b>", bold_body)
+            Paragraph("Chiến Lược (Tactic)", th_style),
+            Paragraph("Mã ID", th_style),
+            Paragraph("Tên Kỹ Thuật (Technique)", th_style),
+            Paragraph("Mô Tả Chi Tiết Nguy Cơ", th_style)
         ]]
         for m in mitres:
             mitre_data.append([
@@ -280,12 +295,14 @@ def generate_pdf_incident_report(scan_result: Dict[str, Any], behavior_analysis:
             ])
         mitre_table = Table(mitre_data, colWidths=[95, 65, 140, 240])
         mitre_table.setStyle(TableStyle([
-            ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#0f172a')),
-            ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
+            ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#e2e8f0')),
             ('BOX', (0, 0), (-1, -1), 1, colors.HexColor('#cbd5e1')),
             ('INNERGRID', (0, 0), (-1, -1), 0.5, colors.HexColor('#e2e8f0')),
-            ('PADDING', (0, 0), (-1, -1), 4),
+            ('PADDING', (0, 0), (-1, -1), 4.5),
+            ('TOPPADDING', (0, 0), (-1, 0), 5.5),
+            ('BOTTOMPADDING', (0, 0), (-1, 0), 5.5),
             ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+            ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor('#f8fafc')])
         ]))
         elements.append(mitre_table)
     else:
