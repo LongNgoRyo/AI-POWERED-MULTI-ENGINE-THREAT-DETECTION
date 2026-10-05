@@ -229,6 +229,28 @@
                   <p id="vulnDescText" style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 0.5rem;">-</p>
                 </div>
 
+                <!-- Phân Tích Quy Trình File Virus Sẽ Làm Gì Khi Chạy -->
+                <div id="executionStepsCard" class="feature-details" style="border-left: 3px solid #ec4899; margin-top: 0; padding: 0.9rem; background: rgba(131, 24, 67, 0.15);">
+                  <div style="font-weight: 700; font-size: 0.88rem; margin-bottom: 0.4rem; color: #fff; display: flex; align-items: center; justify-content: space-between;">
+                    <span>⚡ Bảng Quy Trình File Virus Sẽ Thực Thi</span>
+                    <span class="chip" style="color: #f472b6; border-color: #ec4899;">Virus Actions</span>
+                  </div>
+                  <div style="max-height: 140px; overflow-y: auto;">
+                    <table class="feature-table" style="width: 100%; border-collapse: collapse; font-size: 0.75rem;">
+                      <thead>
+                        <tr style="background: rgba(15, 23, 42, 0.9);">
+                          <th>Giai Đoạn</th>
+                          <th>Hành Động Độc Hại Khi Chạy</th>
+                          <th>Mức Độ</th>
+                        </tr>
+                      </thead>
+                      <tbody id="malwareStepsTableBody">
+                        <!-- Dynamic Rows -->
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
                 <!-- Google Threat Intel & VirusTotal OSINT Lookup Box -->
                 <div id="osintCard" class="feature-details" style="border-left: 3px solid #3b82f6; margin-top: 0; padding: 0.9rem; background: rgba(30, 58, 138, 0.2);">
                   <div style="font-weight: 700; font-size: 0.88rem; margin-bottom: 0.4rem; color: #fff; display: flex; align-items: center; justify-content: space-between;">
@@ -245,7 +267,7 @@
                     <span>Bảng Chi Tiết Thuộc Tính Trích Xuất</span>
                     <span id="featuresCountBadge" style="color: var(--primary);">25 thông số</span>
                   </div>
-                  <div style="max-height: 180px; overflow-y: auto;">
+                  <div style="max-height: 150px; overflow-y: auto;">
                     <table class="feature-table">
                       <thead>
                         <tr>
@@ -286,9 +308,45 @@
                 <!-- Incident Remediation & Safe Vault Actions -->
                 <div class="feature-details" style="border-left: 3px solid var(--primary); background: rgba(15, 23, 42, 0.85); margin-top: 0; padding: 0.9rem;">
                   <div style="font-weight: 700; font-size: 0.88rem; margin-bottom: 0.4rem; color: #fff; display: flex; align-items: center; justify-content: space-between;">
-                    <span>🛡️ Hành Động Khắc Phục & Vùng An Toàn</span>
-                    <button id="btnOpenVaultModal" class="copy-btn" style="color: var(--primary); border-color: var(--primary);">📁 Cửa Sổ Cách Ly Vault</button>
+                    <span>🛡️ Bảng Quy Trình Khắc Phục Sự Cố</span>
+                    <button id="btnOpenVaultModal" class="copy-btn" style="color: var(--primary); border-color: var(--primary);">📁 Cửa Sổ Vault</button>
                   </div>
+                  
+                  <!-- Dedicated Remediation Plan Matrix Table -->
+                  <div style="max-height: 150px; overflow-y: auto; margin-bottom: 0.8rem;">
+                    <table class="feature-table" style="width: 100%; border-collapse: collapse; font-size: 0.75rem;">
+                      <thead>
+                        <tr style="background: rgba(15, 23, 42, 0.9);">
+                          <th>Bước</th>
+                          <th>Phương Pháp Khắc Phục</th>
+                          <th>Trạng Thái AI</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td><strong>B1</strong></td>
+                          <td>🔒 <strong>Cách Ly Vault:</strong> Mã hóa XOR 0x5A lưu vào <code>vault/quarantine/</code> chống Defender xóa</td>
+                          <td><span class="chip" style="color:var(--safe); border-color:var(--safe); font-size:0.68rem;">Sẵn sàng</span></td>
+                        </tr>
+                        <tr>
+                          <td><strong>B2</strong></td>
+                          <td>🧹 <strong>CDR Disarm:</strong> Tước bỏ 100% <code>/JavaScript</code>, <code>/OpenAction</code> tái tạo file sạch</td>
+                          <td><span class="chip" style="color:#60a5fa; border-color:#3b82f6; font-size:0.68rem;">Khuyên dùng</span></td>
+                        </tr>
+                        <tr>
+                          <td><strong>B3</strong></td>
+                          <td>🌐 <strong>C2 Block:</strong> Chặn IP/Domain ngầm, xóa Registry Run Keys <code>HKCU\...\Run</code></td>
+                          <td><span class="chip" style="color:var(--warning); border-color:var(--warning); font-size:0.68rem;">Cần xử lý</span></td>
+                        </tr>
+                        <tr>
+                          <td><strong>B4</strong></td>
+                          <td>💣 <strong>DoD Shredder:</strong> Ghi đè 3 lượt (0x00, 0xFF, Random Bytes) tiêu hủy vĩnh viễn</td>
+                          <td><span class="chip" style="color:var(--danger); border-color:var(--danger); font-size:0.68rem;">Tùy chọn</span></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+
                   <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.5rem; margin-bottom: 0.6rem;">
                     <button id="btnQuarantine" class="cyber-btn cyber-btn-outline" style="font-size: 0.75rem; padding: 0.5rem; border-color: rgba(245, 158, 11, 0.4); color: var(--warning);">
                       🔒 Cách Ly Vào Vault
@@ -303,6 +361,7 @@
                       🔄 Quét File Mới
                     </button>
                   </div>
+
 
                   <!-- Multi-format Exports Grid -->
                   <div style="font-size: 0.78rem; font-weight: 600; color: var(--text-main); margin-bottom: 0.4rem;">📥 Xuất Dữ Liệu & Báo Cáo Sự Cố:</div>

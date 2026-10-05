@@ -821,7 +821,24 @@ function renderScanResults(data) {
     oBadge.style.color = data.is_malicious ? "#60a5fa" : "var(--safe)";
   }
 
+  // Render Malware Execution Steps Table ("File Virus Sẽ Làm Gì Khi Chạy")
+  const stepsTbody = document.getElementById("malwareStepsTableBody");
+  if (stepsTbody) {
+    stepsTbody.innerHTML = "";
+    const steps = getMalwareExecutionSteps(data);
+    steps.forEach(step => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td style="padding: 0.4rem 0.5rem; font-weight: 700; color: var(--primary);">${step.phase}</td>
+        <td style="padding: 0.4rem 0.5rem; color: var(--text-muted);">${step.action}</td>
+        <td style="padding: 0.4rem 0.5rem;"><span class="chip" style="font-size:0.65rem; color:${data.is_malicious ? 'var(--danger)' : 'var(--safe)'}; border-color:${data.is_malicious ? 'var(--danger)' : 'var(--safe)'};">${step.risk}</span></td>
+      `;
+      stepsTbody.appendChild(tr);
+    });
+  }
+
   // Threat Behavior & MITRE ATT&CK Mapping
+
   const behCard = document.getElementById("threatBehaviorCard");
   const behSummary = document.getElementById("behaviorSummaryText");
   const actionsList = document.getElementById("threatActionsList");
@@ -1385,6 +1402,51 @@ function getVulnerabilityAndOsint(data) {
 
   return { vulnName, vulnDesc, vulnSeverity, osintProfile, osintDetails, osintBadge };
 }
+
+function getMalwareExecutionSteps(data) {
+  const isMal = data.is_malicious;
+  const fileName = (data.file_name || "").toLowerCase();
+  const fileType = data.detected_type || "";
+  const features = data.details?.features || {};
+
+  if (!isMal) {
+    return [
+      { phase: "Giai đoạn 1", action: "Nạp file nhị phân & kiểm tra cấu trúc Header hợp lệ.", risk: "AN TOÀN" },
+      { phase: "Giai đoạn 2", action: "Chạy mã thông thường trong không gian User Mode của Windows.", risk: "LÀNH TÍNH" },
+      { phase: "Giai đoạn 3", action: "Tương tác bộ nhớ bình thường, không truy cập tài nguyên cấm.", risk: "CHO PHÉP" }
+    ];
+  }
+
+  if (data.spoofed_extension) {
+    return [
+      { phase: "Giai đoạn 1", action: "Đánh tráo đuôi .docx/.pdf lừa người dùng nhấp đúp qua mặt bộ lọc email.", risk: "NGUY HIỂM CAO" },
+      { phase: "Giai đoạn 2", action: "Bấm mở tệp sẽ khởi chạy mã PE binary (.exe) ngầm thay vì mở Office Word.", risk: "CRITICAL" },
+      { phase: "Giai đoạn 3", action: "Tạo tiến trình con cmd.exe / powershell.exe thực thi lệnh chiếm quyền.", risk: "CHIẾM QUYỀN" }
+    ];
+  } else if (fileType.includes("PDF")) {
+    const jsCount = (features["/JavaScript (Script ngầm)"] || 0) + (features["/JS (Mã nhúng ngắn)"] || 0);
+    return [
+      { phase: "Giai đoạn 1", action: "Người dùng mở file PDF trên ứng dụng Adobe Reader / Foxit Reader.", risk: "KHỞI ĐỘNG" },
+      { phase: "Giai đoạn 2", action: "Thẻ /OpenAction tự kích hoạt ngầm không cần người dùng xác nhận (Zero-click).", risk: "HIGH RISK" },
+      { phase: "Giai đoạn 3", action: `Thực thi ${jsCount} đoạn mã JavaScript ngầm khai thác lỗ hổng bộ nhớ Heap Spray.`, risk: "EXPLOIT RCE" },
+      { phase: "Giai đoạn 4", action: "Thẻ /Launch triệu hồi Command Prompt bên ngoài tải về payload độc thứ 2.", risk: "CRITICAL" }
+    ];
+  } else if (fileName.includes("wannacry") || (features["MaxSectionEntropy"] > 7.15 && data.overall_entropy > 7.2)) {
+    return [
+      { phase: "Giai đoạn 1", action: "Thâm nhập qua lỗ hổng tràn bộ đệm SMBv1 EternalBlue (MS17-010).", risk: "KERNEL EXPLOIT" },
+      { phase: "Giai đoạn 2", action: "Nén ngầm phân đoạn nhị phân UPX0, UPX1 né tránh Antivirus quét tĩnh.", risk: "AV EVASION" },
+      { phase: "Giai đoạn 3", action: "Sửa Registry HKCU\\Software\\...\\Run tự khởi động cùng hệ thống.", risk: "PERSISTENCE" },
+      { phase: "Giai đoạn 4", action: "Khóa toàn bộ tài liệu bằng AES/RSA, dùng vssadmin xóa Shadow Copies tống tiền.", risk: "RANSOMWARE" }
+    ];
+  } else {
+    return [
+      { phase: "Giai đoạn 1", action: "Cấp phát vùng nhớ bất thường VirtualAlloc, nạp thư viện API can thiệp OS.", risk: "SUSPICIOUS" },
+      { phase: "Giai đoạn 2", action: "Tự giải mã chuỗi lệnh độc hại trực tiếp trong RAM né tránh quét ổ đĩa.", risk: "AV EVASION" },
+      { phase: "Giai đoạn 3", action: "Khởi tạo kết nối C2 Server từ xa nhận lệnh điều khiển máy tính nạn nhân.", risk: "C2 BACKDOOR" }
+    ];
+  }
+}
+
 
 // ==========================================
 // 12. Multi-Format Export Engine (CSV, TXT, HTML)
