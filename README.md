@@ -7,6 +7,10 @@
 [![XGBoost](https://img.shields.io/badge/XGBoost-Ensemble-red)](https://xgboost.ai/)
 [![LightGBM](https://img.shields.io/badge/LightGBM-Gradient%20Boosting-brightgreen)](https://lightgbm.readthedocs.io/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![GitHub Pages](https://img.shields.io/badge/Live%20Demo-GitHub%20Pages-success?logo=github&logoColor=white)](https://longngoryo.github.io/AI-POWERED-MULTI-ENGINE-THREAT-DETECTION/)
+
+> ### 🌐 **[TRẢI NGHIỆM WEB TRỰC TUYẾN TẠI ĐÂY (LIVE DEMO)](https://longngoryo.github.io/AI-POWERED-MULTI-ENGINE-THREAT-DETECTION/)**
+> *Không cần cài đặt, không cần localhost — Hoạt động 100% trực tiếp trên GitHub Pages với Web Crypto & Client-Side Binary Parser.*
 
 ---
 
