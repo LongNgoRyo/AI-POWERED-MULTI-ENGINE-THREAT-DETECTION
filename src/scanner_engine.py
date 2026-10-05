@@ -34,9 +34,8 @@ class UnifiedMalwareScanner:
                 self.pe_model = joblib.load(pe_model_path)
                 with open(pe_feat_path, "r", encoding="utf-8") as f:
                     self.pe_features = json.load(f)
-                print("[✓] Đã nạp thành công PE Malware Model.")
             except Exception as e:
-                print(f"[!] Lỗi khi nạp PE Model: {e}")
+                pass
 
         # 2. Nạp PDF Model
         pdf_model_path = os.path.join(self.models_dir, "pdf_detector_model.pkl")
@@ -46,9 +45,8 @@ class UnifiedMalwareScanner:
                 self.pdf_model = joblib.load(pdf_model_path)
                 with open(pdf_feat_path, "r", encoding="utf-8") as f:
                     self.pdf_features = json.load(f)
-                print("[✓] Đã nạp thành công PDF Malware Model.")
             except Exception as e:
-                print(f"[!] Lỗi khi nạp PDF Model: {e}")
+                pass
 
         # 3. Nạp Behavior Model (100.000 mẫu)
         beh_model_path = os.path.join(self.models_dir, "behavior_detector_model.pkl")
@@ -60,9 +58,8 @@ class UnifiedMalwareScanner:
                 self.beh_model = joblib.load(beh_model_path)
                 with open(beh_feat_path, "r", encoding="utf-8") as f:
                     self.beh_features = json.load(f)
-                print("[✓] Đã nạp thành công Behavior/Memory Malware Model (100.000 mẫu).")
             except Exception as e:
-                print(f"[!] Lỗi khi nạp Behavior Model: {e}")
+                pass
 
     def scan_file(self, file_path: str) -> Dict[str, Any]:
         """Quét và phân tích toàn diện một file bất kỳ trên hệ thống."""
