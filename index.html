@@ -95,13 +95,23 @@
             </div>
           </div>
 
+          <!-- Local Path Scanner -->
+          <div class="path-input-group" style="margin-top: 1.2rem;">
+            <label for="localFilePath" style="font-size: 0.8rem; color: var(--text-dim); display: block; margin-bottom: 0.4rem;">Hoặc quét file qua đường dẫn trên máy (nếu chạy local):</label>
+            <div class="path-input-flex" style="display: flex; gap: 0.5rem;">
+              <input type="text" id="localFilePath" class="cyber-input" style="flex: 1;" placeholder="Ví dụ: samples/file_kiem_thu_mo_phong_doc_hai.pdf" />
+              <button id="btnScanPath" class="cyber-btn" style="white-space: nowrap;">Quét Ngay</button>
+            </div>
+          </div>
+
           <!-- Quick Test Presets -->
-          <div class="presets-section" style="margin-top: 1.8rem; border-top: 1px solid var(--border-subtle); padding-top: 1.2rem;">
+          <div class="presets-section" style="margin-top: 1.5rem; border-top: 1px solid var(--border-subtle); padding-top: 1rem;">
             <div class="presets-title">⚡ Mẫu Phân Tích Trực Tuyến (Click xem ngay kết quả):</div>
-            <div class="preset-buttons" style="margin-top: 0.8rem;">
-              <button class="preset-btn" data-preset="notepad">🟢 Notepad.exe (Lành tính)</button>
-              <button class="preset-btn" data-preset="wannacry">🔴 WannaCry (Mã độc tống tiền)</button>
-              <button class="preset-btn" data-preset="pdf_exploit">☣️ PDF JavaScript (Tài liệu độc hại)</button>
+            <div class="preset-buttons" style="margin-top: 0.8rem; display: flex; flex-direction: column; gap: 0.5rem;">
+              <button class="preset-btn" data-preset="notepad" data-path="samples/file_lanh_tinh.exe">🟢 Notepad.exe (Lành tính chuẩn)</button>
+              <button class="preset-btn" data-preset="pdf_exploit" data-path="samples/file_kiem_thu_mo_phong_doc_hai.pdf">☣️ PDF Mã Nhúng (Mô phỏng JS/OpenAction)</button>
+              <button class="preset-btn" data-preset="spoofed" data-path="samples/file_doc_hai_gia_mao.docx">⚠️ Giả Mạo Đuôi (.DOCX ngụy trang PE)</button>
+              <button class="preset-btn" data-preset="wannacry">🔴 WannaCry (Mã độc tống tiền Ransomware)</button>
             </div>
           </div>
 

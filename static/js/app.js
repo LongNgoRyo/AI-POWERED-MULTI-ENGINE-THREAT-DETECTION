@@ -8,6 +8,7 @@ let lastScanResult = null;
 document.addEventListener("DOMContentLoaded", () => {
   initTabs();
   initDropzone();
+  initPathScanner();
   initPresets();
   initSimulator();
   initCopyHash();
@@ -577,6 +578,39 @@ function initPresets() {
           { tactic: "Initial Access", technique_id: "T1204.002", technique_name: "Malicious File Execution Trigger", description: "Tự động kích hoạt lệnh." }
         ]
       }
+    },
+    "spoofed": {
+      file_name: "file_doc_hai_gia_mao.docx",
+      file_path: "samples/file_doc_hai_gia_mao.docx",
+      file_size_human: "96.00 KB",
+      detected_type: "PE (EXE/DLL)",
+      is_malicious: true,
+      spoofed_extension: true,
+      confidence_score: 99.9,
+      risk_level: "NGUY HIỂM CAO (GIẢ MẠO ĐUÔI FILE)",
+      engine_used: "Extension Spoofing & Header Matcher",
+      overall_entropy: 6.45,
+      hashes: {
+        sha256: "7b4c6e9a8d2f10b3e5c7a9b1d3f5e7c9a1b3d5f7e9c1a3b5d7f9e1c3a5b7d9f1",
+        md5: "5d41402abc4b2a76b9719d911017c592"
+      },
+      details: {
+        features: {
+          "Cảnh báo": "Tệp tin hiển thị đuôi .docx nhưng cấu trúc nhị phân bắt đầu bằng MZ (Executable PE)!",
+          "Kỹ thuật": "Extension Spoofing / Double Extension",
+          "Mục tiêu": "Đánh lừa người dùng nhấp đúp để thực thi mã độc ngầm"
+        }
+      },
+      behavior_analysis: {
+        behavior_summary: "Kỹ thuật ngụy trang đuôi tệp tin nhằm đánh lừa người dùng và né tránh bộ lọc bảo mật email.",
+        threat_actions: [
+          "Ngụy trang phần mở rộng thành .docx để lừa người dùng nhấp đúp (Spear-phishing delivery).",
+          "Kích hoạt tiến trình nhị phân ngầm ngay khi được bấm mở thay vì khởi chạy Microsoft Word."
+        ],
+        mitre_attacks: [
+          { tactic: "Defense Evasion", technique_id: "T1036.007", technique_name: "Double File Extension & Masquerading", description: "Đánh tráo phần mở rộng để tránh sự nghi ngờ của người dùng và qua mặt Antivirus." }
+        ]
+      }
     }
   };
 
@@ -587,6 +621,65 @@ function initPresets() {
         showScanningState(`Đang tải mẫu thử: ${presets[pKey].file_name}...`);
         setTimeout(() => renderScanResults(presets[pKey]), 300);
       }
+    });
+  });
+}
+
+function initPathScanner() {
+  const btn = document.getElementById("btnScanPath");
+  const input = document.getElementById("localFilePath");
+
+  const executeScan = async () => {
+    const path = input ? input.value.trim() : "";
+    if (!path) return;
+    showScanningState(`Đang quét tệp tin qua API: ${path}...`);
+    try {
+      const res = await fetch("/api/scan-path", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ file_path: path })
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (!data.error) {
+          renderScanResults(data);
+          return;
+        }
+      }
+    } catch {}
+
+    // Fallback nếu chạy tĩnh trên GitHub Pages
+    const lower = path.toLowerCase();
+    const presetsObj = {
+      "pdf": "pdf_exploit",
+      "docx": "spoofed",
+      "wannacry": "wannacry",
+      "default": "notepad"
+    };
+    let matched = presetsObj.default;
+    if (lower.includes(".pdf")) matched = presetsObj.pdf;
+    else if (lower.includes(".docx")) matched = presetsObj.docx;
+    else if (lower.includes("wannacry")) matched = presetsObj.wannacry;
+
+    const p = JSON.parse(JSON.stringify(presets[matched] || {}));
+    p.file_name = path.split(/[/\\]/).pop();
+    p.file_path = path;
+    renderScanResults(p);
+  };
+
+  btn?.addEventListener("click", executeScan);
+  input?.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      executeScan();
+    }
+  });
+
+  document.querySelectorAll(".preset-btn[data-path]").forEach(pBtn => {
+    pBtn.addEventListener("click", () => {
+      const p = pBtn.getAttribute("data-path");
+      if (input) input.value = p;
+      executeScan();
     });
   });
 }
