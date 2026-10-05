@@ -1,0 +1,35 @@
+{
+    "best_model": "LightGBM",
+    "metrics": {
+        "Accuracy": 1.0,
+        "Precision": 1.0,
+        "Recall": 1.0,
+        "F1-Score": 1.0,
+        "ROC-AUC": 1.0
+    },
+    "all_results": {
+        "LightGBM": {
+            "Accuracy": 1.0,
+            "Precision": 1.0,
+            "Recall": 1.0,
+            "F1-Score": 1.0,
+            "ROC-AUC": 1.0
+        },
+        "XGBoost": {
+            "Accuracy": 1.0,
+            "Precision": 1.0,
+            "Recall": 1.0,
+            "F1-Score": 1.0,
+            "ROC-AUC": 1.0
+        },
+        "Random Forest": {
+            "Accuracy": 1.0,
+            "Precision": 1.0,
+            "Recall": 1.0,
+            "F1-Score": 1.0,
+            "ROC-AUC": 0.9999999999999999
+        }
+    },
+    "total_samples": 100000,
+    "feature_count": 33
+}
