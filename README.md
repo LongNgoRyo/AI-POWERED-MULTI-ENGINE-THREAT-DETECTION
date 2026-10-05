@@ -14,11 +14,11 @@
 
 ---
 
-## 📌 Giới Thiệu Đồ Án (Project Overview)
+## 📌 Giới Thiệu Hệ Thống (Platform Overview)
 
-**AI-POWERED MULTI-ENGINE THREAT DETECTION (MalwareGuardian AI)** là đồ án môn học cuối kỳ về **An Toàn Thông Tin & Ứng Dụng Trí Tuệ Nhân Tạo**. Hệ thống được xây dựng theo kiến trúc **Bộ điều phối đa tầng (Multi-Engine AI Defense Pipeline)**, khắc phục nhược điểm của các giải pháp truyền thống chỉ quét được một định dạng file cố định.
+**AI-POWERED MULTI-ENGINE THREAT DETECTION (MalwareGuardian AI v2.0)** là nền tảng **Giám Định An Ninh Mạng & Khắc Phục Sự Cố Mã Độc Tự Động**. Hệ thống được xây dựng theo kiến trúc **Bộ điều phối đa tầng (Multi-Engine AI Defense & Incident Response Pipeline)**, kết hợp giữa khả năng phát hiện độ chính xác cao và chu trình ứng cứu sự cố toàn diện.
 
-Hệ thống tích hợp **3 Engine AI chuyên biệt** cùng bộ phân tích tĩnh (Static Analysis), đo lường độ hỗn loạn dữ liệu (Shannon Entropy) và nhận diện giả mạo phần mở rộng (Extension Spoofing Detection) theo thời gian thực.
+Hệ thống tích hợp **3 Engine AI chuyên biệt**, bộ phân tích tĩnh (Static Analysis), đo lường độ hỗn loạn dữ liệu (Shannon Entropy), nhận diện giả mạo phần mở rộng (Extension Spoofing Detection), ánh xạ khung chuẩn **MITRE ATT&CK**, hòm cách ly an toàn **Quarantine Vault (Mã hóa XOR 0x5A)** và xuất báo cáo điều tra định dạng **PDF**.
 
 ---
 
@@ -30,7 +30,7 @@ Hệ thống tích hợp **3 Engine AI chuyên biệt** cùng bộ phân tích t
                                          ▼
             ┌────────────────────────────────────────────────────────┐
             │  BƯỚC 1: XÁC THỰC MAGIC BYTES & ĐUÔI TỆP TIN          │
-            │  - Kiểm tra Extension Spoofing (Ví dụ: file .pdf.exe)  │
+            │  - Kiểm tra Extension Spoofing (Ví dụ: file .docx.exe) │
             │  - Tính toán mã băm SHA-256 & MD5                      │
             │  - Đo độ hỗn loạn dữ liệu Shannon Entropy (0.0 - 8.0)  │
             └────────────────────────────┬───────────────────────────┘
@@ -49,12 +49,20 @@ Hệ thống tích hợp **3 Engine AI chuyên biệt** cùng bộ phân tích t
                      └───────────────────┼───────────────────┘
                                          ▼
                  ┌───────────────────────────────────────────┐
-                 │  BÁO CÁO BẢO MẬT & TRỰC QUAN HÓA WEB      │
-                 │  - Kết luận: Safe / Suspicious / Malware │
-                 │  - Điểm số độ tin cậy AI (Confidence %)   │
-                 │  - Bảng bóc tách 25-33 thông số kỹ thuật  │
-                 │  - Xuất báo cáo chuẩn JSON                │
-                 └───────────────────────────────────────────┘
+                 │  PHÂN TÍCH HÀNH VI & KHUNG MITRE ATT&CK  │
+                 │  - T1036 (Masquerading / Double Extension)│
+                 │  - T1059 (JavaScript / Script Execution) │
+                 │  - T1027 (Software Packing / Cryptor)     │
+                 │  - T1486 (Data Encrypted / Ransomware)    │
+                 └───────────────────────┬───────────────────┘
+                                         │
+                    Chu trình khắc phục sự cố (Incident Response)
+                     ┌───────────────────┼───────────────────┐
+                     ▼                   ▼                   ▼
+             [ VÙNG AN TOÀN ]     [ KHỬ ĐỘC CDR ]     [ BÁO CÁO PDF ]
+             Mã hóa XOR 0x5A      Bóc tách JS &       Xuất biên bản
+             Chống Defender       OpenAction ra       giám định pháp y
+             xóa nhầm file        tệp PDF sạch        chuẩn quốc tế
 ```
 
 ---
@@ -103,20 +111,31 @@ Tất cả các biểu đồ đánh giá thực nghiệm đã được kết xu�
 │   ├── pe_detector_model.pkl & pe_features.json
 │   ├── pdf_detector_model.pkl & pdf_features.json
 │   └── behavior_detector_model.pkl & behavior_features.json
-├── reports/                              # Trọn bộ 9 biểu đồ nghiên cứu chất lượng cao
+├── reports/                              # Biểu đồ nghiên cứu & Báo cáo sự cố PDF
+│   ├── *.png                             # 9 biểu đồ nghiên cứu chất lượng cao (300 DPI)
+│   └── security_incidents/               # Thư mục lưu biên bản pháp y PDF tự động
+├── samples/                              # Các mẫu thử an toàn không gây kích hoạt Defender
+│   ├── file_lanh_tinh.exe                # File PE hợp lệ chuẩn
+│   ├── file_lanh_tinh.pdf                # File PDF chuẩn
+│   ├── file_doc_hai_gia_mao.docx         # Mẫu kiểm thử giả mạo đuôi (Spoofed PE)
+│   └── file_kiem_thu_mo_phong_doc_hai.pdf# Mẫu mô phỏng nhúng JS/OpenAction
 ├── src/                                  # Mã nguồn xử lý lõi
-│   ├── feature_extractor.py              # Trích xuất đặc trưng PE (.exe) & PDF từ file thật
+│   ├── feature_extractor.py              # Trích xuất đặc trưng PE & PDF
 │   ├── scanner_engine.py                 # Bộ điều phối quét tập tin đa tầng
+│   ├── remediation_engine.py             # Bộ khắc phục: MITRE ATT&CK, XOR Vault, CDR Disarm
+│   ├── pdf_report_generator.py           # Tạo báo cáo giám định pháp y chuẩn PDF
 │   ├── train_pe_model.py                 # Huấn luyện mô hình PE
 │   ├── train_pdf_model.py                # Huấn luyện mô hình PDF
 │   └── train_behavior_model.py           # Huấn luyện mô hình Hành vi 100k mẫu
-├── web/                                  # Giao diện Web Application
-│   ├── app.py                            # FastAPI Web Server
+├── vault/                                # Vùng an toàn cách ly tệp độc hại
+│   └── quarantine/                       # Lưu tệp .quarantined mã hóa XOR 0x5A
+├── web/                                  # Giao diện Web Application (FastAPI)
+│   ├── app.py                            # FastAPI Web Server & REST API
 │   ├── templates/index.html              # Giao diện Dark Cyber-Defense hiện đại
 │   └── static/css/style.css & js/app.js  # Styling & Logic tương tác
+├── index.html & static/                  # Phiên bản Standalone chạy tĩnh trên GitHub Pages
 ├── requirements.txt                      # Danh sách thư viện phụ thuộc
-├── test_scanner.py                       # Script kiểm thử quét file trực tiếp
-└── README.md                             # Tài liệu báo cáo dự án
+└── README.md                             # Tài liệu kỹ thuật hệ thống
 ```
 
 ---

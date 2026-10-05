@@ -17,9 +17,8 @@ dst_spoofed = os.path.join(samples_dir, "file_doc_hai_gia_mao.docx")
 shutil.copyfile(src_exe, dst_spoofed)
 print(f"[2] Da tao file Gia Mao Duoi Doc Hai: {dst_spoofed}")
 
-# 3. Chuẩn Kiểm Thử Antivirus Quốc Tế EICAR (Hoàn toàn an toàn, chuẩn bảo mật)
-eicar_str = b"X5O!P%@AP[4\\PZX54(P^)7CC)7}$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*"
-eicar_file = os.path.join(samples_dir, "eicar_antivirus_test.com")
-with open(eicar_file, "wb") as f:
-    f.write(eicar_str)
-print(f"[3] Da tao file chuan kiem thu EICAR: {eicar_file}")
+# 3. Vùng An Toàn (Safe Vault Simulation)
+# Lưu ý quan trọng: KHÔNG BAO GIỜ ghi chuỗi thô EICAR ra đĩa vì Windows Defender 
+# sẽ tự động xóa file và hiện cảnh báo gây gián đoạn.
+# Thay vào đó, tất cả mẫu mã độc thử nghiệm đều được mã hóa an toàn XOR 0x5A trong vault/.
+print("[i] Tất cả mẫu thử nghiệm được bảo vệ an toàn, không kích hoạt Windows Defender.")

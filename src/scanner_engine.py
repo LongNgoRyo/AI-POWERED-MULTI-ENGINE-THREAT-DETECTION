@@ -178,4 +178,8 @@ class UnifiedMalwareScanner:
                 result["confidence_score"] = 90.0
                 result["risk_level"] = "AN TOÀN"
 
+        # Tích hợp Phân tích Hành vi & Khung MITRE ATT&CK
+        from src.remediation_engine import analyze_threat_behavior
+        result["behavior_analysis"] = analyze_threat_behavior(result)
+
         return result

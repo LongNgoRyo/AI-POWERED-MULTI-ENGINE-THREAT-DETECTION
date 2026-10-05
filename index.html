@@ -197,9 +197,51 @@
               </div>
             </div>
 
+            <!-- Threat Behavior & MITRE ATT&CK Mapping (Xem nó làm gì) -->
+            <div id="threatBehaviorCard" class="feature-details" style="margin-top: 1.2rem; padding: 1rem; border-left: 3px solid var(--danger);">
+              <div style="font-weight: 700; font-size: 0.95rem; margin-bottom: 0.5rem; color: #fff; display: flex; align-items: center; justify-content: space-between;">
+                <span>🎯 Phân Tích Hành Vi & Khung MITRE ATT&CK</span>
+                <span id="threatAttackBadge" class="chip" style="color: var(--danger); border-color: var(--danger);">Phát hiện rủi ro</span>
+              </div>
+              <p id="behaviorSummaryText" style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.75rem;">-</p>
+              
+              <div style="font-size: 0.8rem; font-weight: 600; color: var(--text-main); margin-bottom: 0.4rem;">Các hành vi mã độc ghi nhận:</div>
+              <ul id="threatActionsList" style="font-size: 0.8rem; color: var(--text-muted); padding-left: 1.2rem; line-height: 1.6; margin-bottom: 0.8rem;">
+              </ul>
+
+              <div id="mitreContainer" style="display: flex; gap: 0.4rem; flex-wrap: wrap;">
+              </div>
+            </div>
+
+            <!-- Incident Remediation & Vault Center (Khắc phục sự cố) -->
+            <div class="feature-details" style="margin-top: 1.2rem; padding: 1rem; border-left: 3px solid var(--primary); background: rgba(15, 23, 42, 0.85);">
+              <div style="font-weight: 700; font-size: 0.95rem; margin-bottom: 0.4rem; color: #fff;">
+                🛡️ Trung Tâm Khắc Phục Sự Cố & Vùng An Toàn
+              </div>
+              <p style="font-size: 0.8rem; color: var(--text-dim); margin-bottom: 0.9rem;">
+                Các tùy chọn xử lý tức thời nhằm bảo vệ máy tính, vô hiệu hóa mã độc (chống Defender xóa nhầm) và xuất báo cáo PDF.
+              </p>
+              <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.6rem;">
+                <button id="btnQuarantine" class="cyber-btn cyber-btn-outline" style="font-size: 0.78rem; padding: 0.6rem; border-color: rgba(245, 158, 11, 0.4); color: var(--warning);">
+                  🔒 Cách Ly Vào Vault (Mã Hóa)
+                </button>
+                <button id="btnDisarmPdf" class="cyber-btn cyber-btn-outline" style="font-size: 0.78rem; padding: 0.6rem; border-color: rgba(16, 185, 129, 0.4); color: var(--safe);">
+                  🧹 Khử Độc Tài Liệu (CDR Disarm)
+                </button>
+                <button id="btnExportPdf" class="cyber-btn" style="font-size: 0.78rem; padding: 0.6rem; background: linear-gradient(135deg, #00f0ff, #3b82f6); color: #000;">
+                  📄 Xuất Báo Cáo Sự Cố PDF
+                </button>
+                <button id="btnShredFile" class="cyber-btn cyber-btn-outline" style="font-size: 0.78rem; padding: 0.6rem; border-color: rgba(244, 63, 94, 0.4); color: var(--danger);">
+                  💣 Tiêu Hủy Vĩnh Viễn (DoD)
+                </button>
+              </div>
+              <div id="remediationStatusMsg" style="display: none; margin-top: 0.8rem; font-size: 0.8rem; padding: 0.6rem; border-radius: var(--radius-sm); background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: var(--safe);">
+              </div>
+            </div>
+
             <!-- Action Export Bar -->
             <div style="display: flex; gap: 0.75rem; margin-top: 1.2rem;">
-              <button id="btnExportJson" class="cyber-btn cyber-btn-outline" style="flex: 1;">📥 Xuất Báo Cáo JSON</button>
+              <button id="btnExportJson" class="cyber-btn cyber-btn-outline" style="flex: 1;">📥 Xuất Dữ Liệu JSON</button>
               <button id="btnScanAnother" class="cyber-btn" style="flex: 1;">🔄 Quét File Mới</button>
             </div>
 
@@ -530,6 +572,10 @@
       <img id="modalImg" src="" alt="Enlarged Report Chart" />
     </div>
   </div>
+
+  <!-- Client-Side PDF Generation Engines (jsPDF & AutoTable) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 
   <!-- JavaScript Application Logic -->
   <script src="./static/js/app.js"></script>

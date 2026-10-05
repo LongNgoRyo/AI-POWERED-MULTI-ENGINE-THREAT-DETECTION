@@ -23,3 +23,9 @@ Thumbs.db
 
 # Scratches & Logs
 *.log
+
+# Incident Reports & Safe Vault Quarantined Files
+reports/security_incidents/*
+!reports/security_incidents/.gitkeep
+vault/quarantine/*
+!vault/quarantine/.gitkeep

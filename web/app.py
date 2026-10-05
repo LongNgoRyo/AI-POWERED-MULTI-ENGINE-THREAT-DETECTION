@@ -152,6 +152,54 @@ async def get_system_status():
         }
     }
 
+# =========================================================================
+# Remediation & Incident Response Endpoints (Khắc phục sự cố)
+# =========================================================================
+from fastapi.responses import FileResponse
+from src.remediation_engine import quarantine_file, disarm_pdf, shred_file
+from src.pdf_report_generator import generate_pdf_incident_report
+
+class RemediationRequest(BaseModel):
+    file_path: str
+    hashes: dict = {}
+
+@app.post("/api/remediate/quarantine")
+async def api_quarantine_file(req: RemediationRequest):
+    """Cách ly tập tin độc hại vào Vùng An Toàn (Mã hóa XOR chống Defender xóa nhầm)."""
+    res = quarantine_file(req.file_path, req.hashes)
+    return JSONResponse(content=res)
+
+@app.post("/api/remediate/disarm")
+async def api_disarm_file(req: RemediationRequest):
+    """Công nghệ CDR Khử độc tài liệu: tước bỏ toàn bộ mã JavaScript/OpenAction."""
+    res = disarm_pdf(req.file_path)
+    return JSONResponse(content=res)
+
+@app.post("/api/remediate/shred")
+async def api_shred_file(req: RemediationRequest):
+    """Tiêu hủy tệp tin bảo mật vĩnh viễn theo chuẩn DoD 5220.22-M."""
+    res = shred_file(req.file_path)
+    return JSONResponse(content=res)
+
+class ExportPdfRequest(BaseModel):
+    scan_result: dict
+    remediation_info: dict = {}
+
+@app.post("/api/export-pdf-report")
+async def api_export_pdf_report(req: ExportPdfRequest):
+    """Tạo và tải về Báo Cáo Điều Tra & Khắc Phục Sự Cố định dạng PDF."""
+    try:
+        beh_analysis = req.scan_result.get("behavior_analysis", {})
+        pdf_path = generate_pdf_incident_report(req.scan_result, beh_analysis, req.remediation_info)
+        file_name = os.path.basename(pdf_path)
+        return FileResponse(
+            path=pdf_path,
+            filename=file_name,
+            media_type="application/pdf"
+        )
+    except Exception as e:
+        return JSONResponse(status_code=500, content={"error": str(e)})
+
 if __name__ == "__main__":
     import uvicorn
     print("\n" + "=" * 60)
