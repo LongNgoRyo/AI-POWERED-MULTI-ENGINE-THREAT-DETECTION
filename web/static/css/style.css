@@ -1047,3 +1047,151 @@ body {
   font-weight: 600;
   color: var(--text-muted);
 }
+
+/* ==========================================
+   VIRUSTOTAL STYLE DASHBOARD & 4 RISK LEVELS
+   ========================================== */
+.vt-dashboard-header {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 1.5rem;
+  align-items: center;
+  background: rgba(15, 23, 42, 0.6);
+  padding: 1.2rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle);
+  margin-top: 0.5rem;
+}
+
+@media (max-width: 850px) {
+  .vt-dashboard-header {
+    grid-template-columns: 1fr;
+  }
+}
+
+.vt-gauge-box {
+  background: rgba(8, 12, 20, 0.85);
+  border: 1px solid var(--border-highlight);
+  border-radius: var(--radius-md);
+  padding: 1.2rem 1rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 15px rgba(0, 240, 255, 0.1);
+}
+
+.vt-ratio-circle {
+  margin-bottom: 0.6rem;
+}
+
+.vt-ratio-num {
+  font-family: var(--font-heading);
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: #fff;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.vt-ratio-sub {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: 0.2rem;
+}
+
+.vt-progress-track {
+  width: 100%;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 9999px;
+  overflow: hidden;
+}
+
+.vt-progress-fill {
+  height: 100%;
+  border-radius: 9999px;
+  transition: width 0.5s ease, background-color 0.5s ease;
+}
+
+/* 4 Severity Levels Bar */
+.vt-risk-strip {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.risk-strip-title {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+}
+
+.risk-levels-bar {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.6rem;
+}
+
+@media (max-width: 600px) {
+  .risk-levels-bar {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.risk-level-pill {
+  padding: 0.65rem 0.5rem;
+  border-radius: var(--radius-md);
+  background: rgba(15, 23, 42, 0.7);
+  border: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-dim);
+  transition: all 0.3s ease;
+  opacity: 0.45;
+}
+
+.risk-level-pill.active {
+  opacity: 1;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+}
+
+.risk-level-pill.low.active {
+  background: rgba(16, 185, 129, 0.15);
+  border-color: var(--safe);
+  color: var(--safe);
+}
+
+.risk-level-pill.medium.active {
+  background: rgba(245, 158, 11, 0.15);
+  border-color: var(--warning);
+  color: var(--warning);
+}
+
+.risk-level-pill.high.active {
+  background: rgba(249, 115, 22, 0.15);
+  border-color: #f97316;
+  color: #f97316;
+}
+
+.risk-level-pill.critical.active {
+  background: rgba(244, 63, 94, 0.2);
+  border-color: var(--danger);
+  color: var(--danger);
+  animation: pulse-danger-pill 1.5s infinite alternate;
+}
+
+@keyframes pulse-danger-pill {
+  from { box-shadow: 0 0 10px rgba(244, 63, 94, 0.3); }
+  to { box-shadow: 0 0 20px rgba(244, 63, 94, 0.7); }
+}

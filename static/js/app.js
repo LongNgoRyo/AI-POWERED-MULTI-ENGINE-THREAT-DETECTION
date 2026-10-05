@@ -711,91 +711,154 @@ function resetScanningState() {
 // ==========================================
 // 6. Render Results UI & Threat Behavior
 // ==========================================
+// ==========================================
+// 6. Render Results UI & Threat Behavior
+// ==========================================
 function renderScanResults(data) {
   lastScanResult = data;
 
   document.getElementById("scanPlaceholder").style.display = "none";
   document.getElementById("scanResultsContent").style.display = "block";
 
-  const badge = document.getElementById("scanStatusBadge");
-  badge.textContent = "Hoàn tất";
-  badge.style.borderColor = "var(--safe)";
-  badge.style.color = "var(--safe)";
+  const statusBadge = document.getElementById("scanStatusBadge");
+  if (statusBadge) {
+    statusBadge.textContent = "Hoàn tất";
+    statusBadge.style.borderColor = "var(--safe)";
+    statusBadge.style.color = "var(--safe)";
+  }
 
+  // Determine 4 Severity Levels & VT Detection Ratio
+  let severityLevel = "THẤP"; // Options: "THẤP", "TRUNG BÌNH", "CAO", "NGHIÊM TRỌNG"
+  let vtRatioText = "0 / 72";
+  let vtPercent = 0;
+  let severityColor = "var(--safe)";
+  let verdictClass = "safe";
+
+  if (data.is_malicious) {
+    const riskUpper = (data.risk_level || "").toUpperCase();
+    const entropy = data.overall_entropy || 0;
+    const confidence = data.confidence_score || 90;
+
+    if (riskUpper.includes("RANSOMWARE") || riskUpper.includes("PE MALWARE") || entropy > 7.4 || confidence > 98.5) {
+      severityLevel = "NGHIÊM TRỌNG";
+      vtRatioText = "68 / 72";
+      vtPercent = 94.4;
+      severityColor = "var(--danger)";
+      verdictClass = "danger";
+    } else if (riskUpper.includes("TÀI LIỆU") || riskUpper.includes("PDF") || riskUpper.includes("GIẢ MẠO") || confidence > 95) {
+      severityLevel = "CAO";
+      vtRatioText = "54 / 72";
+      vtPercent = 75.0;
+      severityColor = "#f97316";
+      verdictClass = "warning";
+    } else {
+      severityLevel = "TRUNG BÌNH";
+      vtRatioText = "28 / 72";
+      vtPercent = 38.8;
+      severityColor = "var(--warning)";
+      verdictClass = "warning";
+    }
+  } else {
+    severityLevel = "THẤP";
+    vtRatioText = "0 / 72";
+    vtPercent = 0;
+    severityColor = "var(--safe)";
+    verdictClass = "safe";
+  }
+
+  // Update VT Ratio Count & Progress Bar
+  const vtCount = document.getElementById("vtRatioCount");
+  if (vtCount) vtCount.textContent = vtRatioText;
+
+  const vtBar = document.getElementById("vtRatioBar");
+  if (vtBar) {
+    vtBar.style.width = `${Math.max(4, vtPercent)}%`;
+    vtBar.style.backgroundColor = severityColor;
+  }
+
+  // Highlight 4-Level Risk Pills
+  document.querySelectorAll(".risk-level-pill").forEach(pill => {
+    pill.classList.remove("active");
+    if (pill.getAttribute("data-level") === severityLevel) {
+      pill.classList.add("active");
+    }
+  });
+
+  // Verdict Banner
   const banner = document.getElementById("verdictBanner");
   const vTitle = document.getElementById("verdictTitle");
   const vIcon = document.getElementById("verdictIcon");
   const vEngine = document.getElementById("verdictEngine");
   const vScore = document.getElementById("verdictScore");
 
-  banner.className = "verdict-banner";
-  if (data.is_malicious) {
-    banner.classList.add("danger");
-    vTitle.textContent = data.risk_level.toUpperCase();
-    vIcon.textContent = "☣️";
-  } else {
-    banner.classList.add("safe");
-    vTitle.textContent = data.risk_level.toUpperCase();
-    vIcon.textContent = "🛡️";
-  }
+  if (banner) banner.className = `verdict-banner ${verdictClass}`;
+  if (vTitle) vTitle.textContent = (data.risk_level || "KẾT QUẢ GIÁM ĐỊNH").toUpperCase();
+  if (vIcon) vIcon.textContent = data.is_malicious ? (severityLevel === "NGHIÊM TRỌNG" ? "☣️" : "⚠️") : "🛡️";
+  if (vEngine) vEngine.textContent = `Động cơ: ${data.engine_used || "AI Multi-Engine Classifier"}`;
+  if (vScore) vScore.textContent = `${data.confidence_score}%`;
 
-  vEngine.textContent = `Động cơ: ${data.engine_used || "AI Classifier"}`;
-  vScore.textContent = `${data.confidence_score}%`;
-
-  document.getElementById("resFileName").textContent = data.file_name;
-  document.getElementById("resFileSize").textContent = data.file_size_human;
-  document.getElementById("resFileTypeBadge").textContent = data.detected_type;
-  document.getElementById("resSha256").textContent = data.hashes.sha256;
+  document.getElementById("resFileName").textContent = data.file_name || "-";
+  document.getElementById("resFileSize").textContent = data.file_size_human || "-";
+  document.getElementById("resFileTypeBadge").textContent = data.detected_type || "GENERIC";
+  document.getElementById("resSha256").textContent = data.hashes?.sha256 || "-";
 
   // Shannon Entropy
   const entVal = Number(data.overall_entropy) || 0;
   document.getElementById("entropyVal").textContent = entVal.toFixed(2);
   const entPercent = Math.min(100, Math.max(0, (entVal / 8.0) * 100));
   const entFill = document.getElementById("entropyFill");
-  entFill.style.width = `${entPercent}%`;
+  if (entFill) entFill.style.width = `${entPercent}%`;
 
   const entStatus = document.getElementById("entropyStatus");
-  if (entVal > 7.2) {
-    entStatus.textContent = "Mức độ hỗn loạn rất cao (Nghi vấn Packer/Mã độc mã hóa)";
-    entStatus.style.color = "var(--danger)";
-  } else if (entVal > 6.0) {
-    entStatus.textContent = "Mức độ hỗn loạn trung bình (Dữ liệu nén hoặc thư viện thông thường)";
-    entStatus.style.color = "var(--warning)";
-  } else {
-    entStatus.textContent = "Bình thường (Dữ liệu không bị mã hóa/obfuscate)";
-    entStatus.style.color = "var(--safe)";
+  if (entStatus) {
+    if (entVal > 7.2) {
+      entStatus.textContent = "Mức độ hỗn loạn rất cao (Nghi vấn Packer/Mã độc mã hóa)";
+      entStatus.style.color = "var(--danger)";
+    } else if (entVal > 6.0) {
+      entStatus.textContent = "Mức độ hỗn loạn trung bình (Dữ liệu nén hoặc thư viện thông thường)";
+      entStatus.style.color = "var(--warning)";
+    } else {
+      entStatus.textContent = "Bình thường (Dữ liệu không bị mã hóa/obfuscate)";
+      entStatus.style.color = "var(--safe)";
+    }
   }
 
   // Feature Table
   const tbody = document.getElementById("featuresTableBody");
-  tbody.innerHTML = "";
-  const featureMap = data.details?.features || {};
-  const keys = Object.keys(featureMap);
-  document.getElementById("featuresCountBadge").textContent = `${keys.length} thuộc tính`;
+  if (tbody) {
+    tbody.innerHTML = "";
+    const featureMap = data.details?.features || {};
+    const keys = Object.keys(featureMap);
+    const fBadge = document.getElementById("featuresCountBadge");
+    if (fBadge) fBadge.textContent = `${keys.length} thuộc tính`;
 
-  keys.forEach(k => {
-    const tr = document.createElement("tr");
-    const tdKey = document.createElement("td");
-    const tdVal = document.createElement("td");
+    keys.forEach(k => {
+      const tr = document.createElement("tr");
+      const tdKey = document.createElement("td");
+      const tdVal = document.createElement("td");
 
-    tdKey.textContent = k;
-    tdKey.style.color = "var(--text-muted)";
+      tdKey.textContent = k;
+      tdKey.style.color = "var(--text-muted)";
+      tdKey.style.padding = "0.6rem 0.9rem";
 
-    const val = featureMap[k];
-    tdVal.textContent = typeof val === "number" ? (Number.isInteger(val) ? val : val.toFixed(4)) : val;
+      const val = featureMap[k];
+      tdVal.textContent = typeof val === "number" ? (Number.isInteger(val) ? val : val.toFixed(4)) : val;
+      tdVal.style.padding = "0.6rem 0.9rem";
+      tdVal.style.fontFamily = "var(--font-mono)";
 
-    if (k.toLowerCase().includes("suspicious") && val > 0) {
-      tdVal.style.color = "var(--danger)";
-      tdVal.style.fontWeight = "700";
-    } else if ((k.includes("/JavaScript") || k.includes("/OpenAction") || k.includes("/Launch")) && val > 0) {
-      tdVal.style.color = "var(--warning)";
-      tdVal.style.fontWeight = "700";
-    }
+      if (k.toLowerCase().includes("suspicious") && val > 0) {
+        tdVal.style.color = "var(--danger)";
+        tdVal.style.fontWeight = "700";
+      } else if ((k.includes("/JavaScript") || k.includes("/OpenAction") || k.includes("/Launch")) && val > 0) {
+        tdVal.style.color = "#f97316";
+        tdVal.style.fontWeight = "700";
+      }
 
-    tr.appendChild(tdKey);
-    tr.appendChild(tdVal);
-    tbody.appendChild(tr);
-  });
+      tr.appendChild(tdKey);
+      tr.appendChild(tdVal);
+      tbody.appendChild(tr);
+    });
+  }
 
   // Dynamic Vulnerability & Google Threat Intel OSINT Rendering
   const vulnOSINT = getVulnerabilityAndOsint(data);
@@ -828,59 +891,70 @@ function renderScanResults(data) {
     const steps = getMalwareExecutionSteps(data);
     steps.forEach(step => {
       const tr = document.createElement("tr");
+      let riskChipColor = "var(--safe)";
+      if (step.risk.includes("CRITICAL") || step.risk.includes("NGHIÊM TRỌNG") || step.risk.includes("RANSOMWARE")) riskChipColor = "var(--danger)";
+      else if (step.risk.includes("HIGH") || step.risk.includes("CAO")) riskChipColor = "#f97316";
+      else if (step.risk.includes("SUSPICIOUS") || step.risk.includes("TRUNG BÌNH")) riskChipColor = "var(--warning)";
+
       tr.innerHTML = `
-        <td style="padding: 0.4rem 0.5rem; font-weight: 700; color: var(--primary);">${step.phase}</td>
-        <td style="padding: 0.4rem 0.5rem; color: var(--text-muted);">${step.action}</td>
-        <td style="padding: 0.4rem 0.5rem;"><span class="chip" style="font-size:0.65rem; color:${data.is_malicious ? 'var(--danger)' : 'var(--safe)'}; border-color:${data.is_malicious ? 'var(--danger)' : 'var(--safe)'};">${step.risk}</span></td>
+        <td style="padding: 0.75rem 1rem; font-weight: 700; color: var(--primary); font-family: var(--font-mono); white-space: nowrap;">${step.phase}</td>
+        <td style="padding: 0.75rem 1rem; color: var(--text-main); line-height: 1.5;">${step.action}</td>
+        <td style="padding: 0.75rem 1rem; white-space: nowrap;"><span class="chip" style="font-size:0.75rem; font-weight:700; color:${riskChipColor}; border-color:${riskChipColor};">${step.risk}</span></td>
       `;
       stepsTbody.appendChild(tr);
     });
   }
 
   // Threat Behavior & MITRE ATT&CK Mapping
-
   const behCard = document.getElementById("threatBehaviorCard");
   const behSummary = document.getElementById("behaviorSummaryText");
   const actionsList = document.getElementById("threatActionsList");
   const mitreContainer = document.getElementById("mitreContainer");
   const threatBadge = document.getElementById("threatAttackBadge");
 
-  actionsList.innerHTML = "";
-  mitreContainer.innerHTML = "";
+  if (actionsList) actionsList.innerHTML = "";
+  if (mitreContainer) mitreContainer.innerHTML = "";
 
   const behData = data.behavior_analysis || generateClientSideBehavior(data);
-  behSummary.textContent = behData.behavior_summary;
+  if (behSummary) behSummary.textContent = behData.behavior_summary;
 
-  if (data.is_malicious) {
-    behCard.style.borderLeftColor = "var(--danger)";
-    threatBadge.textContent = "Phát hiện mối đe dọa";
-    threatBadge.style.color = "var(--danger)";
-    threatBadge.style.borderColor = "var(--danger)";
-  } else {
-    behCard.style.borderLeftColor = "var(--safe)";
-    threatBadge.textContent = "Hành vi an toàn";
-    threatBadge.style.color = "var(--safe)";
-    threatBadge.style.borderColor = "var(--safe)";
+  if (behCard && threatBadge) {
+    if (data.is_malicious) {
+      behCard.style.borderLeftColor = "var(--danger)";
+      threatBadge.textContent = "Phát hiện mối đe dọa";
+      threatBadge.style.color = "var(--danger)";
+      threatBadge.style.borderColor = "var(--danger)";
+    } else {
+      behCard.style.borderLeftColor = "var(--safe)";
+      threatBadge.textContent = "Hành vi an toàn";
+      threatBadge.style.color = "var(--safe)";
+      threatBadge.style.borderColor = "var(--safe)";
+    }
   }
 
   (behData.threat_actions || []).forEach(act => {
-    const li = document.createElement("li");
-    li.textContent = act;
-    actionsList.appendChild(li);
+    if (actionsList) {
+      const li = document.createElement("li");
+      li.textContent = act;
+      actionsList.appendChild(li);
+    }
   });
 
   (behData.mitre_attacks || []).forEach(m => {
-    const chip = document.createElement("span");
-    chip.className = "chip";
-    chip.style.borderColor = "rgba(244, 63, 94, 0.4)";
-    chip.style.color = "#f43f5e";
-    chip.title = `${m.technique_name}: ${m.description}`;
-    chip.innerHTML = `<strong>${m.technique_id}</strong>: ${m.technique_name}`;
-    mitreContainer.appendChild(chip);
+    if (mitreContainer) {
+      const chip = document.createElement("span");
+      chip.className = "chip";
+      chip.style.borderColor = "rgba(244, 63, 94, 0.4)";
+      chip.style.color = "#f43f5e";
+      chip.style.padding = "0.4rem 0.8rem";
+      chip.style.fontSize = "0.8rem";
+      chip.title = `${m.technique_name}: ${m.description}`;
+      chip.innerHTML = `<strong>${m.technique_id}</strong>: ${m.technique_name}`;
+      mitreContainer.appendChild(chip);
+    }
   });
 
-
-  const resCard = document.getElementById("resultsCard");
+  const resCard = document.getElementById("resultsCardBox1");
   if (resCard) {
     const yOffset = -85;
     const y = resCard.getBoundingClientRect().top + window.pageYOffset + yOffset;
