@@ -834,6 +834,13 @@ function renderScanResults(data) {
     chip.innerHTML = `<strong>${m.technique_id}</strong>: ${m.technique_name}`;
     mitreContainer.appendChild(chip);
   });
+
+  const resCard = document.getElementById("resultsCard");
+  if (resCard) {
+    const yOffset = -85;
+    const y = resCard.getBoundingClientRect().top + window.pageYOffset + yOffset;
+    window.scrollTo({ top: Math.max(0, y), behavior: "smooth" });
+  }
 }
 
 // ==========================================
@@ -916,9 +923,9 @@ function exportClientSidePdfReport(scanResult) {
   doc.rect(0, 0, 210, 26, "F");
 
   doc.setFont("helvetica", "bold");
-  doc.setFontSize(13);
+  doc.setFontSize(12.5);
   doc.setTextColor(255, 255, 255);
-  doc.text("AI DEFENSE - FORENSIC SECURITY AUDIT REPORT", 105, 11, { align: "center" });
+  doc.text("MALWAREGUARDIAN AI - FORENSIC SECURITY AUDIT REPORT", 105, 11, { align: "center" });
 
   doc.setFont("helvetica", "normal");
   doc.setFontSize(8);
@@ -1045,7 +1052,7 @@ function exportClientSidePdfReport(scanResult) {
   doc.setFont("helvetica", "italic");
   doc.setFontSize(7.5);
   doc.setTextColor(...slate);
-  doc.text("Bao cao duoc xuat tu dong boi AI Defense Forensics Engine. Tat ca du lieu da duoc ky xac thuc an toan.", 105, currentY, { align: "center" });
+  doc.text("Bao cao duoc xuat tu dong boi MalwareGuardian AI Forensic Engine. Tat ca du lieu da duoc ky xac thuc an toan.", 105, currentY, { align: "center" });
 
   const safeFileName = (scanResult.file_name || "sample").replace(/[^a-zA-Z0-9_\-]/g, "_");
   doc.save(`Security_Incident_Report_${safeFileName}.pdf`);

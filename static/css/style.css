@@ -303,13 +303,53 @@ body {
 /* Scanner Layout Grid */
 .scanner-grid {
   display: grid;
-  grid-template-columns: 1.1fr 0.9fr;
-  gap: 2rem;
+  grid-template-columns: 340px 1fr;
+  gap: 1.5rem;
   align-items: start;
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 1080px) {
   .scanner-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+#resultsCard {
+  scroll-margin-top: 90px;
+}
+
+/* Modern Split Multi-Column Result Layout (Cột kép song song không cần cuộn) */
+.results-columns-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-top: 1.2rem;
+  align-items: start;
+}
+
+.result-column {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.column-card-title {
+  font-family: var(--font-heading);
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border-subtle);
+  margin-bottom: 0.2rem;
+}
+
+@media (max-width: 1200px) {
+  .results-columns-grid {
     grid-template-columns: 1fr;
   }
 }
