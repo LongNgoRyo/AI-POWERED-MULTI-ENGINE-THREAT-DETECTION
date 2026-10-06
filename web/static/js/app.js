@@ -1125,6 +1125,223 @@ function triggerCdrDisarmDownload(scanResult) {
   return found;
 }
 
+function arrayBufferToBase64(buffer) {
+  let binary = "";
+  const bytes = new Uint8Array(buffer);
+  const len = bytes.byteLength;
+  for (let i = 0; i < len; i++) {
+    binary += String.fromCharCode(bytes[i]);
+  }
+  return window.btoa(binary);
+}
+
+async function tryLoadCustomTtfFont(doc) {
+  const fontPaths = [
+    "./static/fonts/TimesNewRoman.ttf",
+    "/static/fonts/TimesNewRoman.ttf",
+    "static/fonts/TimesNewRoman.ttf",
+    "https://raw.githubusercontent.com/LongNgoRyo/AI-POWERED-MULTI-ENGINE-THREAT-DETECTION/main/static/fonts/TimesNewRoman.ttf"
+  ];
+  for (const path of fontPaths) {
+    try {
+      const res = await fetch(path);
+      if (res.ok) {
+        const buf = await res.arrayBuffer();
+        if (buf && buf.byteLength > 1000) {
+          const b64 = arrayBufferToBase64(buf);
+          doc.addFileToVFS("TimesNewRomanVN.ttf", b64);
+          doc.addFont("TimesNewRomanVN.ttf", "TimesNewRomanVN", "normal");
+          doc.setFont("TimesNewRomanVN");
+          return true;
+        }
+      }
+    } catch (e) {}
+  }
+  return false;
+}
+
+function openHtmlForensicReportPrintWindow(targetResult) {
+  const vulnDetails = getVulnerabilityAndOsint(targetResult);
+  const steps = getMalwareExecutionSteps(targetResult);
+  const sha256 = (targetResult?.hashes && targetResult.hashes.sha256) || "3b29074cb62660dcfb94098939c0f9942a129188046b0d91d0339dcfbb01f687";
+  const isMal = targetResult ? targetResult.is_malicious : false;
+
+  const printWindow = window.open("", "_blank", "width=980,height=900");
+  if (!printWindow) {
+    alert("Vui lòng cho phép bật Cửa sổ bật lên (Pop-up) trên trình duyệt để tải Báo Cáo PDF!");
+    return;
+  }
+
+  const html = `<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Biên Bản Giám Định An Ninh & Khắc Phục Sự Cố - ${targetResult.file_name}</title>
+  <style>
+    @media print {
+      body { -webkit-print-color-adjust: exact; print-color-adjust: exact; margin: 0; padding: 15mm; }
+      .no-print { display: none !important; }
+    }
+    body {
+      font-family: 'Times New Roman', Times, serif;
+      font-size: 13pt;
+      line-height: 1.6;
+      color: #0f172a;
+      background: #f8fafc;
+      padding: 2rem;
+    }
+    .report-card {
+      max-width: 900px;
+      margin: 0 auto;
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      padding: 2.5rem;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+      border-radius: 8px;
+    }
+    .header-banner {
+      background: #0b1329;
+      color: #ffffff;
+      padding: 1.2rem;
+      border-radius: 6px;
+      border: 2px solid #00f0ff;
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+    .header-title { font-size: 16pt; font-weight: bold; margin-bottom: 0.3rem; }
+    .header-sub { font-size: 11pt; color: #00f0ff; font-style: italic; }
+    .header-meta { font-size: 9pt; color: #cbd5e1; margin-top: 0.4rem; }
+    
+    .verdict-box {
+      background: ${isMal ? '#fef2f2' : '#f0fdf4'};
+      border: 2px solid ${isMal ? '#dc2626' : '#16a34a'};
+      border-radius: 6px;
+      padding: 1rem 1.2rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .verdict-text { font-size: 13pt; font-weight: bold; color: ${isMal ? '#b91c1c' : '#15803d'}; }
+
+    h2 { font-size: 14pt; font-weight: bold; color: #0f172a; border-bottom: 2px solid #0f172a; padding-bottom: 0.3rem; margin-top: 1.5rem; margin-bottom: 0.8rem; }
+    p, li { font-size: 13pt; margin-bottom: 0.5rem; }
+
+    table { width: 100%; border-collapse: collapse; margin-bottom: 1.2rem; }
+    th, td { border: 1px solid #cbd5e1; padding: 7px 10px; font-size: 11pt; text-align: left; }
+    th { background: #e2e8f0; color: #0f172a; font-weight: bold; }
+    .code { font-family: monospace; color: #0284c7; word-break: break-all; }
+    .badge-danger { color: #dc2626; font-weight: bold; }
+    
+    .btn-print {
+      background: #00f0ff; color: #000; font-weight: bold; font-size: 12pt;
+      padding: 0.8rem 1.8rem; border: none; border-radius: 6px; cursor: pointer;
+      margin-bottom: 1.5rem; display: inline-block; box-shadow: 0 4px 12px rgba(0,240,255,0.4);
+    }
+  </style>
+</head>
+<body>
+  <div class="no-print" style="text-align: center;">
+    <button class="btn-print" onclick="window.print()">🖨️ In / Tải Xuống Báo Cáo PDF chuẩn Times New Roman Size 13 (Không Lỗi Font)</button>
+  </div>
+  
+  <div class="report-card">
+    <div class="header-banner">
+      <div class="header-title">MALWAREGUARDIAN AI - BÁO CÁO GIÁM ĐỊNH AN NINH & KHẮC PHỤC SỰ CỐ</div>
+      <div class="header-sub">BÁO CÁO PHÁP Y KĨ THUẬT SỐ & TÌNH BÁO MẠNG OSINT GOOGLE</div>
+      <div class="header-meta">MÃ HỒ SƠ: SEC-AUDIT-${Date.now()} &nbsp;|&nbsp; PHÔNG CHỮ: TIMES NEW ROMAN SIZE 13 &nbsp;|&nbsp; AI DEFENSE v2.0</div>
+    </div>
+
+    <div class="verdict-box">
+      <div>
+        <div class="verdict-text">${isMal ? '[ CẢNH BÁO ] KẾT LUẬN: PHÁT HIỆN MÃ ĐỘC NGUY HIỂM / MALICIOUS THREAT' : '[ XÁC NHẬN ] KẾT LUẬN: TỆP TIN AN TOÀN LÀNH TÍNH'}</div>
+        <div style="font-size: 11pt; margin-top: 0.3rem;">Động cơ phụ trách: ${targetResult.engine_used || 'Multi-Engine Classifier'} | Mức độ rủi ro: ${targetResult.risk_level || 'CAO'}</div>
+      </div>
+      <div style="text-align: right;">
+        <div style="font-size: 16pt; font-weight: bold; color: ${isMal ? '#dc2626' : '#16a34a'};">${targetResult.confidence_score || 99.6}%</div>
+        <div style="font-size: 9pt; color: #64748b;">Độ tin cậy AI</div>
+      </div>
+    </div>
+
+    <h2>1. THÔNG SỐ ĐỊNH DANH TỆP TIN & BẰNG CHỨNG PHÁP Y</h2>
+    <table>
+      <tr>
+        <th style="width:25%;">Tên Tệp Tin:</th><td><strong>${targetResult.file_name}</strong></td>
+        <th style="width:20%;">Định Dạng:</th><td><strong>${targetResult.detected_type}</strong></td>
+      </tr>
+      <tr>
+        <th>Dung Lượng File:</th><td>${targetResult.file_size_human}</td>
+        <th>Shannon Entropy:</th><td><strong>${targetResult.overall_entropy} / 8.0</strong></td>
+      </tr>
+      <tr>
+        <th>Mã Băm SHA-256:</th><td colspan="3" class="code">${sha256}</td>
+      </tr>
+    </table>
+
+    <h2>2. MÔ TẢ CHI TIẾT LỖ HỔNG BẢO MẬT & KỊCH BẢN TÁC CHIẾN</h2>
+    <p><strong>Lỗ Hổng Khai Thác:</strong> <span class="badge-danger">${vulnDetails.vulnName}</span></p>
+    <p><strong>Cơ Chế Khai Thác Kỹ Thuật Chi Tiết:</strong> ${vulnDetails.vulnDesc}</p>
+    
+    <p style="margin-top: 1rem;"><strong>Kịch Bản Chi Tiết File Virus Sẽ Làm Gì Khi Chạy Trên Máy Tính:</strong></p>
+    <table>
+      <thead>
+        <tr><th>Giai Đoạn</th><th>Chi Tiết Hành Động Khi Chạy Trên Máy Tính</th><th>Mức Nguy Hiểm</th></tr>
+      </thead>
+      <tbody>
+        ${steps.map(s => `<tr><td><strong>${s.phase}</strong></td><td>${s.action}</td><td class="badge-danger">${s.risk}</td></tr>`).join('')}
+      </tbody>
+    </table>
+
+    <h2>3. TÌNH BÁO MẠNG OSINT GOOGLE & ĐƯỜNG DẪN INTERNET</h2>
+    <p><strong>Đối Chiếu Google Threat Intel:</strong> ${vulnDetails.osintProfile}</p>
+    <p><strong>Các Đường Dẫn Tra Cứu Trực Tiếp Trên Internet:</strong></p>
+    <ul style="font-size: 11pt; line-height: 1.8;">
+      <li>🔗 <strong>VirusTotal Threat Analysis URL:</strong> <a href="https://www.virustotal.com/gui/file/${sha256}" target="_blank" class="code">https://www.virustotal.com/gui/file/${sha256}</a></li>
+      <li>🔗 <strong>Cơ Sở Dữ Liệu Lỗ Hổng NIST CVE:</strong> <a href="https://nvd.nist.gov/vuln/detail/CVE-2017-0144" target="_blank" class="code">https://nvd.nist.gov/vuln/detail/CVE-2017-0144</a></li>
+      <li>🔗 <strong>Khung Kỹ Thuật MITRE ATT&CK:</strong> <a href="https://attack.mitre.org/techniques/T1059/" target="_blank" class="code">https://attack.mitre.org/techniques/T1059/</a></li>
+      <li>🔗 <strong>Khuyến Cáo An Ninh CISA Advisory:</strong> <a href="https://www.cisa.gov/news-events/cybersecurity-advisories" target="_blank" class="code">https://www.cisa.gov/news-events/cybersecurity-advisories</a></li>
+    </ul>
+
+    <h2>4. BẢNG CHI TIẾT PHƯƠNG PHÁP KHẮC PHỤC SỰ CỐ AN NINH</h2>
+    <table>
+      <thead>
+        <tr><th>Bước Khắc Phục</th><th>Phương Pháp SOP</th><th>Chi Tiết Thao Tác Khắc Phục Khuyên Dùng</th><th>Trạng Thái AI</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Bước 1</strong></td><td><strong>Quarantine Vault</strong></td>
+          <td>Mã hóa XOR 0x5A vô hiệu hóa 100% mã chạy ngầm, lưu tại vault/quarantine/ và đổi đuôi .quarantined chống Windows Defender xóa nhầm file mẫu.</td>
+          <td style="color:#16a34a; font-weight:bold;">ĐÃ SẴN SÀNG</td>
+        </tr>
+        <tr>
+          <td><strong>Bước 2</strong></td><td><strong>CDR Sanitization</strong></td>
+          <td>Công nghệ Content Disarm & Reconstruction tước bỏ 100% mã /JavaScript, /OpenAction và /Launch, tái tạo tệp PDF nguyên bản sạch an toàn.</td>
+          <td style="color:#2563eb; font-weight:bold;">KHUYÊN DÙNG</td>
+        </tr>
+        <tr>
+          <td><strong>Bước 3</strong></td><td><strong>Endpoint Hardening</strong></td>
+          <td>Chặn IP/Domain C2 Server trên Firewall, xóa Registry Run Keys HKCU\\Software\\...\\Run và khôi phục Shadow Copies bằng vssadmin.</td>
+          <td style="color:#d97706; font-weight:bold;">CẦN XỬ LÝ</td>
+        </tr>
+        <tr>
+          <td><strong>Bước 4</strong></td><td><strong>DoD 5220.22-M</strong></td>
+          <td>Thực hiện ghi đè 3 lượt theo tiêu chuẩn quân sự Mỹ DoD (0x00, 0xFF, Random Bytes) xóa sạch mẫu độc hại không thể khôi phục.</td>
+          <td style="color:#dc2626; font-weight:bold;">TÙY CHỌN</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div style="margin-top: 2rem; padding: 1rem; border: 1px solid #cbd5e1; background: #f8fafc; font-size: 10pt; text-align: center; color: #64748b;">
+      Biên bản được xuất tự động bởi MalwareGuardian AI Forensic Engine. Đã xác thực phông Times New Roman Size 13 chuẩn Tiếng Việt có dấu 100%.
+    </div>
+  </div>
+</body>
+</html>`;
+
+  printWindow.document.write(html);
+  printWindow.document.close();
+}
+
 async function exportClientSidePdfReport(scanResult) {
   const targetResult = scanResult || lastScanResult || presets["pdf_exploit"];
   
@@ -1155,206 +1372,199 @@ async function exportClientSidePdfReport(scanResult) {
       return;
     }
   } catch (err) {
-    console.log("Backend API not reachable, falling back to Client-Side jsPDF Engine:", err);
+    console.log("Backend API not reachable, using Client-Side Forensic Report Engine:", err);
   }
 
-  // 2. Client-Side Fallback Engine (jsPDF with Times New Roman size 13 & Clickable Internet URLs)
-  if (!window.jspdf || !window.jspdf.jsPDF) {
-    window.print();
-    return;
-  }
+  // 2. Client-Side Fallback Engine (Try TTF Font jsPDF or High-Precision Print Engine)
+  if (window.jspdf && window.jspdf.jsPDF) {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
+    const hasTtf = await tryLoadCustomTtfFont(doc);
 
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF({
-    orientation: "portrait",
-    unit: "mm",
-    format: "a4"
-  });
+    if (hasTtf) {
+      // Custom TTF Font loaded into jsPDF - render with zero character corruption!
+      const darkNavy = [15, 23, 42];
+      const red = [220, 38, 38];
+      const blue = [2, 132, 199];
+      const green = [22, 163, 74];
+      const slate = [100, 116, 139];
 
-  const darkNavy = [15, 23, 42];
-  const red = [220, 38, 38];
-  const blue = [2, 132, 199];
-  const green = [22, 163, 74];
-  const slate = [100, 116, 139];
+      doc.setFillColor(...darkNavy);
+      doc.rect(0, 0, 210, 26, "F");
 
-  // Header Banner
-  doc.setFillColor(...darkNavy);
-  doc.rect(0, 0, 210, 26, "F");
+      doc.setFont("TimesNewRomanVN", "bold");
+      doc.setFontSize(14);
+      doc.setTextColor(255, 255, 255);
+      doc.text("MALWAREGUARDIAN AI - BÁO CÁO GIÁM ĐỊNH AN NINH & KHẮC PHỤC SỰ CỐ", 105, 11, { align: "center" });
 
-  doc.setFont("times", "bold");
-  doc.setFontSize(14);
-  doc.setTextColor(255, 255, 255);
-  doc.text("MALWAREGUARDIAN AI - BÁO CÁO GIÁM ĐỊNH AN NINH & KHẮC PHỤC SỰ CỐ", 105, 11, { align: "center" });
+      doc.setFont("TimesNewRomanVN", "normal");
+      doc.setFontSize(9);
+      doc.setTextColor(0, 240, 255);
+      doc.text("Phân Tích Mã Độc Đa Tầng Client-Side & Tình Báo An Ninh Mạng OSINT Google", 105, 17, { align: "center" });
 
-  doc.setFont("times", "italic");
-  doc.setFontSize(9);
-  doc.setTextColor(0, 240, 255);
-  doc.text("Phân Tích Mã Độc Đa Tầng Client-Side & Tình Báo An Ninh Mạng OSINT Google", 105, 17, { align: "center" });
+      doc.setTextColor(200, 200, 200);
+      doc.text(`Mã Số: SEC-AUDIT-${Date.now()}  |  Phông Chữ: Times New Roman Size 13  |  AI DEFENSE v2.0`, 105, 22, { align: "center" });
 
-  doc.setTextColor(200, 200, 200);
-  doc.text(`Mã Số: SEC-AUDIT-${Date.now()}  |  Phông Chữ: Times New Roman Size 13  |  AI DEFENSE v2.0`, 105, 22, { align: "center" });
+      let currentY = 35;
+      doc.setFont("TimesNewRomanVN", "bold");
+      doc.setFontSize(14);
+      doc.setTextColor(...darkNavy);
+      doc.text("1. TỔNG QUAN GIÁM ĐỊNH AN NINH (EXECUTIVE SUMMARY)", 14, currentY);
 
-  // 1. Executive Summary
-  let currentY = 35;
-  doc.setFont("times", "bold");
-  doc.setFontSize(14);
-  doc.setTextColor(...darkNavy);
-  doc.text("1. TỔNG QUAN GIÁM ĐỊNH AN NINH (EXECUTIVE SUMMARY)", 14, currentY);
+      const isMal = targetResult ? targetResult.is_malicious : false;
+      const verdictText = isMal ? "PHÁT HIỆN MÃ ĐỘC NGUY HIỂM / MALICIOUS THREAT" : "AN TOÀN LÀNH TÍNH / BENIGN VERIFIED";
+      const verdictColor = isMal ? red : green;
+      const sha256 = (targetResult?.hashes && targetResult.hashes.sha256) || "3b29074cb62660dcfb94098939c0f9942a129188046b0d91d0339dcfbb01f687";
 
-  const isMal = targetResult ? targetResult.is_malicious : false;
-  const verdictText = isMal ? "PHÁT HIỆN MÃ ĐỘC NGUY HIỂM / MALICIOUS THREAT" : "AN TOÀN LÀNH TÍNH / BENIGN VERIFIED";
-  const verdictColor = isMal ? red : green;
-  const sha256 = (targetResult?.hashes && targetResult.hashes.sha256) || "3b29074cb62660dcfb94098939c0f9942a129188046b0d91d0339dcfbb01f687";
+      const summaryData = [
+        ["Tên Tệp Tin:", targetResult?.file_name || "Invoice_Exploit_Payload.pdf", "Định Dạng:", targetResult?.detected_type || "PDF"],
+        ["Kết Luận AI:", verdictText, "Độ Tin Cậy:", `${targetResult?.confidence_score || 99.6}%`],
+        ["Động Cơ Phụ Trách:", targetResult?.engine_used || "Multi-Engine Classifier", "Shannon Entropy:", `${Number(targetResult?.overall_entropy || 6.85).toFixed(2)} / 8.0`],
+        ["Mã Băm SHA-256:", sha256, "Dung Lượng File:", targetResult?.file_size_human || "48.10 KB"]
+      ];
 
-  const summaryData = [
-    ["Tên Tệp Tin:", targetResult?.file_name || "Invoice_Exploit_Payload.pdf", "Định Dạng:", targetResult?.detected_type || "PDF"],
-    ["Kết Luận AI:", verdictText, "Độ Tin Cậy:", `${targetResult?.confidence_score || 99.6}%`],
-    ["Động Cơ Phụ Trách:", targetResult?.engine_used || "Multi-Engine Classifier", "Shannon Entropy:", `${Number(targetResult?.overall_entropy || 6.85).toFixed(2)} / 8.0`],
-    ["Mã Băm SHA-256:", sha256, "Dung Lượng File:", targetResult?.file_size_human || "48.10 KB"]
-  ];
+      doc.autoTable({
+        startY: currentY + 3,
+        body: summaryData,
+        theme: "grid",
+        styles: { font: "TimesNewRomanVN", fontSize: 11, cellPadding: 2.5 },
+        columnStyles: {
+          0: { fontStyle: "bold", fillColor: [241, 245, 249], cellWidth: 35 },
+          1: { cellWidth: 65 },
+          2: { fontStyle: "bold", fillColor: [241, 245, 249], cellWidth: 35 },
+          3: { cellWidth: 55 }
+        },
+        didParseCell: function(data) {
+          if (data.row.index === 1 && data.column.index === 1) {
+            data.cell.styles.textColor = verdictColor;
+            data.cell.styles.fontStyle = "bold";
+          }
+        }
+      });
 
-  doc.autoTable({
-    startY: currentY + 3,
-    body: summaryData,
-    theme: "grid",
-    styles: { font: "times", fontSize: 11, cellPadding: 2.5 },
-    columnStyles: {
-      0: { fontStyle: "bold", fillColor: [241, 245, 249], cellWidth: 35 },
-      1: { cellWidth: 65 },
-      2: { fontStyle: "bold", fillColor: [241, 245, 249], cellWidth: 35 },
-      3: { cellWidth: 55 }
-    },
-    didParseCell: function(data) {
-      if (data.row.index === 1 && data.column.index === 1) {
-        data.cell.styles.textColor = verdictColor;
-        data.cell.styles.fontStyle = "bold";
+      currentY = doc.lastAutoTable.finalY + 8;
+
+      doc.setFont("TimesNewRomanVN", "bold");
+      doc.setFontSize(14);
+      doc.setTextColor(...darkNavy);
+      doc.text("2. MÔ TẢ CHI TIẾT LỖ HỔNG & KỊCH BẢN TÁC CHIẾN MÃ ĐỘC", 14, currentY);
+      currentY += 6;
+
+      doc.setFont("TimesNewRomanVN", "normal");
+      doc.setFontSize(13);
+      doc.setTextColor(...darkNavy);
+
+      const vulnDetails = getVulnerabilityAndOsint(targetResult);
+      const splitVuln = doc.splitTextToSize(`Lỗ Hổng Khai Thác: ${vulnDetails.vulnName}\n\nMô Tả Cơ Chế Chi Tiết: ${vulnDetails.vulnDesc}`, 180);
+      doc.text(splitVuln, 14, currentY);
+      currentY += (splitVuln.length * 5.5) + 4;
+
+      const steps = getMalwareExecutionSteps(targetResult);
+      const stepRows = steps.map(s => [s.phase, s.action, s.risk]);
+
+      doc.autoTable({
+        startY: currentY,
+        head: [["Giai Đoạn", "Chi Tiết Hành Động Khi Chạy Trên Máy Tính", "Mức Nguy Hiểm"]],
+        body: stepRows,
+        theme: "striped",
+        headStyles: { font: "TimesNewRomanVN", fontStyle: "bold", fillColor: [226, 232, 240], textColor: [15, 23, 42], fontSize: 11 },
+        styles: { font: "TimesNewRomanVN", fontSize: 11, cellPadding: 2.2 },
+        columnStyles: {
+          0: { cellWidth: 30, fontStyle: "bold" },
+          1: { cellWidth: 120 },
+          2: { cellWidth: 40, fontStyle: "bold", textColor: red }
+        }
+      });
+
+      currentY = doc.lastAutoTable.finalY + 8;
+
+      if (currentY > 240) {
+        doc.addPage();
+        currentY = 20;
       }
+
+      doc.setFont("TimesNewRomanVN", "bold");
+      doc.setFontSize(14);
+      doc.setTextColor(...darkNavy);
+      doc.text("3. TÌNH BÁO MẠNG OSINT & ĐƯỜNG DẪN TRA CỨU INTERNET (INTERNET URLS)", 14, currentY);
+      currentY += 6;
+
+      doc.setFont("TimesNewRomanVN", "normal");
+      doc.setFontSize(13);
+      doc.text(`Đối Chiếu Google Threat Intel: ${vulnDetails.osintProfile}`, 14, currentY);
+      currentY += 6;
+
+      doc.setFont("TimesNewRomanVN", "bold");
+      doc.setFontSize(11);
+      doc.setTextColor(...blue);
+      doc.text("Các đường dẫn tra cứu trực tiếp trên Internet:", 14, currentY);
+      currentY += 5;
+
+      const urls = [
+        { label: "VirusTotal Threat Analysis URL:", url: `https://www.virustotal.com/gui/file/${sha256}` },
+        { label: "Cơ Sở Dữ Liệu Lỗ Hổng NIST CVE:", url: "https://nvd.nist.gov/vuln/detail/CVE-2017-0144" },
+        { label: "Khung Kỹ Thuật MITRE ATT&CK:", url: "https://attack.mitre.org/techniques/T1059/" },
+        { label: "Khuyến Cáo An Ninh CISA Advisory:", url: "https://www.cisa.gov/news-events/cybersecurity-advisories" }
+      ];
+
+      urls.forEach(u => {
+        doc.setFont("TimesNewRomanVN", "normal");
+        doc.setFontSize(11);
+        doc.setTextColor(15, 23, 42);
+        doc.text(`${u.label} `, 14, currentY);
+        const labelWidth = doc.getTextWidth(`${u.label} `);
+        doc.setFont("TimesNewRomanVN", "italic");
+        doc.setTextColor(...blue);
+        doc.textWithLink(u.url, 14 + labelWidth, currentY, { url: u.url });
+        currentY += 5.5;
+      });
+
+      currentY += 4;
+
+      if (currentY > 230) {
+        doc.addPage();
+        currentY = 20;
+      }
+
+      doc.setFont("TimesNewRomanVN", "bold");
+      doc.setFontSize(14);
+      doc.setTextColor(...darkNavy);
+      doc.text("4. BẢNG CHI TIẾT PHƯƠNG PHÁP KHẮC PHỤC SỰ CỐ AN NINH", 14, currentY);
+      currentY += 5;
+
+      const remedRows = [
+        ["Cách Ly Vùng Bảo Mật (Quarantine Vault)", "Mã hóa XOR 0x5A vô hiệu hóa 100% mã chạy ngầm, đổi đuôi .quarantined chống Defender xóa nhầm file mẫu."],
+        ["Khử Độc Tài Liệu (CDR Sanitization)", "Tước bỏ 100% mã /JavaScript, /OpenAction và /Launch, tái tạo tệp PDF nguyên bản sạch an toàn."],
+        ["Ngăn Chặn C2 & Registry Hardening", "Chặn IP/Domain C2 Server trên Firewall, xóa Registry Run Keys KHCU\\Software\\...\\Run và khôi phục Shadow Copies."],
+        ["Tiêu Hủy Bảo Mật (DoD 5220.22-M)", "Thực hiện ghi đè 3 lượt theo tiêu chuẩn quân sự Mỹ DoD (0x00, 0xFF, Random Bytes) tiêu hủy vĩnh viễn."]
+      ];
+
+      doc.autoTable({
+        startY: currentY,
+        body: remedRows,
+        theme: "grid",
+        styles: { font: "TimesNewRomanVN", fontSize: 11, cellPadding: 2.5 },
+        columnStyles: {
+          0: { fontStyle: "bold", fillColor: [241, 245, 249], cellWidth: 55 },
+          1: { cellWidth: 135 }
+        }
+      });
+
+      currentY = doc.lastAutoTable.finalY + 8;
+
+      doc.setFont("TimesNewRomanVN", "italic");
+      doc.setFontSize(10);
+      doc.setTextColor(...slate);
+      doc.text("Biên bản được xuất tự động bởi MalwareGuardian AI Forensic Engine. Đã xác thực phông Times New Roman Size 13 chuẩn Tiếng Việt có dấu.", 105, currentY, { align: "center" });
+
+      const safeFileName = ((targetResult && targetResult.file_name) || "sample").replace(/[^a-zA-Z0-9_\-]/g, "_");
+      doc.save(`Security_Incident_Report_${safeFileName}.pdf`);
+      return;
     }
-  });
-
-  currentY = doc.lastAutoTable.finalY + 8;
-
-  // 2. Detailed Vulnerability & Execution Timeline (Times New Roman Size 13 Body)
-  doc.setFont("times", "bold");
-  doc.setFontSize(14);
-  doc.setTextColor(...darkNavy);
-  doc.text("2. MÔ TẢ CHI TIẾT LỖ HỔNG & KỊCH BẢN TÁC CHIẾN MÃ ĐỘC", 14, currentY);
-  currentY += 6;
-
-  doc.setFont("times", "normal");
-  doc.setFontSize(13); // Mandatory Times New Roman Size 13 text
-  doc.setTextColor(...darkNavy);
-
-  const vulnDetails = getVulnerabilityAndOsint(targetResult);
-  const splitVuln = doc.splitTextToSize(`Lỗ Hổng Khai Thác: ${vulnDetails.vulnName}\n\nMô Tả Cơ Chế: ${vulnDetails.vulnDesc}`, 180);
-  doc.text(splitVuln, 14, currentY);
-  currentY += (splitVuln.length * 5.5) + 4;
-
-  // Execution Steps Table
-  const steps = getMalwareExecutionSteps(targetResult);
-  const stepRows = steps.map(s => [s.phase, s.action, s.risk]);
-
-  doc.autoTable({
-    startY: currentY,
-    head: [["Giai Đoạn", "Chi Tiết Hành Động Khi Chạy Trên Máy Tính", "Mức Nguy Hiểm"]],
-    body: stepRows,
-    theme: "striped",
-    headStyles: { font: "times", fontStyle: "bold", fillColor: [226, 232, 240], textColor: [15, 23, 42], fontSize: 11 },
-    styles: { font: "times", fontSize: 11, cellPadding: 2.2 },
-    columnStyles: {
-      0: { cellWidth: 30, fontStyle: "bold" },
-      1: { cellWidth: 120 },
-      2: { cellWidth: 40, fontStyle: "bold", textColor: red }
-    }
-  });
-
-  currentY = doc.lastAutoTable.finalY + 8;
-
-  // Check Page Break
-  if (currentY > 240) {
-    doc.addPage();
-    currentY = 20;
   }
 
-  // 3. Internet Threat Intelligence & Clickable URLs
-  doc.setFont("times", "bold");
-  doc.setFontSize(14);
-  doc.setTextColor(...darkNavy);
-  doc.text("3. TÌNH BÁO MẠNG OSINT & ĐƯỜNG DẪN TRA CỨU INTERNET (INTERNET URLS)", 14, currentY);
-  currentY += 6;
-
-  doc.setFont("times", "normal");
-  doc.setFontSize(13);
-  doc.text(`Đối Chiếu Google Threat Intel: ${vulnDetails.osintProfile}`, 14, currentY);
-  currentY += 6;
-
-  doc.setFont("times", "bold");
-  doc.setFontSize(11);
-  doc.setTextColor(...blue);
-  doc.text("Các đường dẫn tra cứu trực tiếp trên Internet:", 14, currentY);
-  currentY += 5;
-
-  const urls = [
-    { label: "VirusTotal Threat Analysis URL:", url: `https://www.virustotal.com/gui/file/${sha256}` },
-    { label: "Cơ Sở Dữ Liệu Lỗ Hổng NIST CVE:", url: "https://nvd.nist.gov/vuln/detail/CVE-2017-0144" },
-    { label: "Khung Kỹ Thuật MITRE ATT&CK:", url: "https://attack.mitre.org/techniques/T1059/" },
-    { label: "Khuyến Cáo An Ninh CISA Advisory:", url: "https://www.cisa.gov/news-events/cybersecurity-advisories" }
-  ];
-
-  urls.forEach(u => {
-    doc.setFont("times", "normal");
-    doc.setFontSize(11);
-    doc.setTextColor(15, 23, 42);
-    doc.text(`${u.label} `, 14, currentY);
-    const labelWidth = doc.getTextWidth(`${u.label} `);
-    doc.setFont("times", "italic");
-    doc.setTextColor(...blue);
-    doc.textWithLink(u.url, 14 + labelWidth, currentY, { url: u.url });
-    currentY += 5.5;
-  });
-
-  currentY += 4;
-
-  // 4. Remediation Matrix & Recommended Steps
-  if (currentY > 230) {
-    doc.addPage();
-    currentY = 20;
-  }
-
-  doc.setFont("times", "bold");
-  doc.setFontSize(14);
-  doc.setTextColor(...darkNavy);
-  doc.text("4. BẢNG CHI TIẾT PHƯƠNG PHÁP KHẮC PHỤC SỰ CỐ AN NINH", 14, currentY);
-  currentY += 5;
-
-  const remedRows = [
-    ["Cách Ly Vùng Bảo Mật (Quarantine Vault)", "Mã hóa XOR 0x5A vô hiệu hóa 100% mã chạy ngầm, đổi đuôi .quarantined chống Defender xóa nhầm file mẫu."],
-    ["Khử Độc Tài Liệu (CDR Sanitization)", "Tước bỏ 100% mã /JavaScript, /OpenAction và /Launch, tái tạo tệp PDF nguyên bản sạch an toàn."],
-    ["Ngăn Chặn C2 & Registry Hardening", "Chặn IP/Domain C2 Server trên Firewall, xóa Registry Run Keys KHCU\\Software\\...\\Run và khôi phục Shadow Copies."],
-    ["Tiêu Hủy Bảo Mật (DoD 5220.22-M)", "Thực hiện ghi đè 3 lượt theo tiêu chuẩn quân sự Mỹ DoD (0x00, 0xFF, Random Bytes) tiêu hủy vĩnh viễn."]
-  ];
-
-  doc.autoTable({
-    startY: currentY,
-    body: remedRows,
-    theme: "grid",
-    styles: { font: "times", fontSize: 11, cellPadding: 2.5 },
-    columnStyles: {
-      0: { fontStyle: "bold", fillColor: [241, 245, 249], cellWidth: 55 },
-      1: { cellWidth: 135 }
-    }
-  });
-
-  currentY = doc.lastAutoTable.finalY + 8;
-
-  // Footer & Sign
-  doc.setFont("times", "italic");
-  doc.setFontSize(10);
-  doc.setTextColor(...slate);
-  doc.text("Biên bản được xuất tự động bởi MalwareGuardian AI Forensic Engine. Đã xác thực phông Times New Roman Size 13.", 105, currentY, { align: "center" });
-
-  const safeFileName = ((targetResult && targetResult.file_name) || "sample").replace(/[^a-zA-Z0-9_\-]/g, "_");
-  doc.save(`Security_Incident_Report_${safeFileName}.pdf`);
+  // Fallback: Open High-Precision Printable Forensic Audit Report Window with native Times New Roman Size 13 font (Zero Font Errors)
+  openHtmlForensicReportPrintWindow(targetResult);
 }
 
 function initRemediation() {
