@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MalwareGuardian AI - Hệ Thống Nhận Diện Mã Độc Đa Tầng</title>
-  <meta name="description" content="Hệ thống phân tích và nhận diện mã độc thời gian thực ứng dụng Machine Learning (PE Header, Cấu trúc PDF, Hành vi tiến trình hệ điều hành)">
+  <title>MalwareGuardian AI - Hệ Thống Nhận Diện & Khắc Phục Mã Độc Đa Tầng</title>
+  <meta name="description" content="Hệ thống phân tích, nhận diện và khắc phục sự cố mã độc thời gian thực ứng dụng Machine Learning (PE Header, Cấu trúc PDF, Shannon Entropy, CDR Disarm & Vault Isolation)">
   
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -13,6 +13,10 @@
   
   <!-- Stylesheet -->
   <link rel="stylesheet" href="./static/css/style.css">
+  
+  <!-- Client-Side jsPDF CDN for PDF Export -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
 </head>
 <body>
 
@@ -29,19 +33,16 @@
         </div>
       </a>
 
-      <!-- Navigation Tabs -->
+      <!-- Navigation Tabs (Replaced per user directive) -->
       <nav class="nav-tabs" id="navTabs">
         <button class="nav-tab-btn active" data-tab="tab-scanner">
           <span>🛡️</span> Quét File Trực Tuyến
         </button>
-        <button class="nav-tab-btn" data-tab="tab-analytics">
-          <span>📊</span> Thống Kê & Báo Cáo AI
+        <button class="nav-tab-btn" data-tab="tab-remediation">
+          <span>🛠️</span> Kết Quả Khắc Phục
         </button>
-        <button class="nav-tab-btn" data-tab="tab-simulator">
-          <span>⚡</span> Mô Phỏng Tiến Trình
-        </button>
-        <button class="nav-tab-btn" data-tab="tab-docs">
-          <span>📖</span> Kiến Trúc & Dataset
+        <button class="nav-tab-btn" data-tab="tab-vault">
+          <span>📁</span> Xử Lý File Sau Khi Hoàn Tất
         </button>
       </nav>
 
@@ -350,89 +351,16 @@
             </div>
 
 
-            <!-- =========================================================================
-                 KHUNG 3: BIỆN PHÁP KHẮC PHỤC SỰ CỐ & TRUNG TÂM XỬ LÝ
-                 ========================================================================= -->
-            <div class="glass-card result-box-card" id="resultsCardBox3" style="margin-top: 1.5rem; border-left: 4px solid var(--safe);">
-              <div class="card-header">
-                <h3 class="card-title"><span>🛡️</span> KHUNG 3: BIỆN PHÁP KHẮC PHỤC SỰ CỐ & XUẤT BÁO CÁO</h3>
-                <button id="btnOpenVaultModal" class="copy-btn" style="color: var(--primary); border-color: var(--primary); font-size: 0.85rem; padding: 0.3rem 0.8rem; border: 1px solid var(--primary); border-radius: var(--radius-sm);">📁 Cửa Sổ Vault</button>
+            <!-- Quick Next Action Toolbar -->
+            <div class="glass-card" style="margin-top: 1.5rem; background: rgba(15, 23, 42, 0.85); border: 1px solid var(--border-highlight); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+              <div>
+                <h4 style="color: #fff; font-size: 1rem; display: flex; align-items: center; gap: 0.5rem;"><span>⚡</span> Bước Tiếp Theo Sau Khi Giám Định:</h4>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.2rem;">Chuyển nhanh sang các tab xử lý chuyên dụng bên dưới để thực thi kế hoạch ứng phó hoặc quản lý file.</p>
               </div>
-
-              <!-- Subsection 3.1: Remediation Matrix Table -->
-              <div class="feature-details" style="border-left: 3px solid var(--primary); background: rgba(15, 23, 42, 0.85); margin-top: 0; padding: 1.2rem;">
-                <div style="font-weight: 700; font-size: 1rem; margin-bottom: 0.8rem; color: #fff; display: flex; align-items: center; justify-content: space-between;">
-                  <span>🛡️ Kế Hoạch Ứng Phó Sự Cố An Ninh 4 Bước (Remediation Plan Matrix)</span>
-                  <span class="chip" style="color: var(--primary); border-color: var(--primary);">INCIDENT RESPONSE</span>
-                </div>
-                
-                <!-- Dedicated Remediation Plan Matrix Table (NO INNER SCROLLBAR) -->
-                <div style="width: 100%; overflow-x: auto; margin-bottom: 1.2rem;">
-                  <table class="feature-table" style="width: 100%; border-collapse: collapse; font-size: 0.85rem;">
-                    <thead>
-                      <tr style="background: rgba(15, 23, 42, 0.9);">
-                        <th style="padding: 0.75rem 1rem; width: 10%;">Bước</th>
-                        <th style="padding: 0.75rem 1rem;">Phương Pháp Khắc Phục Kỹ Thuật</th>
-                        <th style="padding: 0.75rem 1rem; width: 20%;">Trạng Thái AI Khuyến Nghị</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td style="padding: 0.75rem 1rem;"><strong>B1</strong></td>
-                        <td style="padding: 0.75rem 1rem;">🔒 <strong>Cách Ly Vault:</strong> Mã hóa XOR <code>0x5A</code> lưu tệp vào <code>vault/quarantine/</code> ngăn Windows Defender tự động xóa nhầm file mẫu khi đang điều tra.</td>
-                        <td style="padding: 0.75rem 1rem;"><span class="chip" style="color:var(--safe); border-color:var(--safe); font-size:0.75rem;">Sẵn sàng thực thi</span></td>
-                      </tr>
-                      <tr>
-                        <td style="padding: 0.75rem 1rem;"><strong>B2</strong></td>
-                        <td style="padding: 0.75rem 1rem;">🧹 <strong>Khử Độc Tài Liệu (CDR Disarm):</strong> Tước bỏ 100% các đoạn mã nhúng độc hại (<code>/JavaScript</code>, <code>/OpenAction</code>, <code>/Launch</code>), tái tạo tệp PDF an toàn nguyên bản.</td>
-                        <td style="padding: 0.75rem 1rem;"><span class="chip" style="color:#60a5fa; border-color:#3b82f6; font-size:0.75rem;">Khuyên dùng (PDF)</span></td>
-                      </tr>
-                      <tr>
-                        <td style="padding: 0.75rem 1rem;"><strong>B3</strong></td>
-                        <td style="padding: 0.75rem 1rem;">🌐 <strong>C2 Block & System Cleanup:</strong> Chặn các IP/Domain ngầm kết nối C2 Server, xóa bỏ Registry Run Keys (<code>HKCU\Software\Microsoft\Windows\CurrentVersion\Run</code>).</td>
-                        <td style="padding: 0.75rem 1rem;"><span class="chip" style="color:var(--warning); border-color:var(--warning); font-size:0.75rem;">Cần xử lý hệ thống</span></td>
-                      </tr>
-                      <tr>
-                        <td style="padding: 0.75rem 1rem;"><strong>B4</strong></td>
-                        <td style="padding: 0.75rem 1rem;">💣 <strong>Tiêu Hủy Vĩnh Viễn (DoD 5220.22-M):</strong> Ghi đè 3 lượt (0x00, 0xFF, Cryptographic Random Bytes) theo chuẩn Bộ Quốc Phòng Mỹ tiêu hủy tệp triệt để.</td>
-                        <td style="padding: 0.75rem 1rem;"><span class="chip" style="color:var(--danger); border-color:var(--danger); font-size:0.75rem;">Tùy chọn khẩn cấp</span></td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-
-                <!-- Action Buttons Grid -->
-                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.8rem; margin-bottom: 1.2rem;">
-                  <button id="btnQuarantine" class="cyber-btn cyber-btn-outline" style="font-size: 0.85rem; padding: 0.7rem; border-color: rgba(245, 158, 11, 0.5); color: var(--warning);">
-                    🔒 Cách Ly Vào Vault
-                  </button>
-                  <button id="btnDisarmPdf" class="cyber-btn cyber-btn-outline" style="font-size: 0.85rem; padding: 0.7rem; border-color: rgba(16, 185, 129, 0.5); color: var(--safe);">
-                    🧹 Khử Độc Tài Liệu (CDR)
-                  </button>
-                  <button id="btnShredFile" class="cyber-btn cyber-btn-outline" style="font-size: 0.85rem; padding: 0.7rem; border-color: rgba(244, 63, 94, 0.5); color: var(--danger);">
-                    💣 Tiêu Hủy Vĩnh Viễn (DoD)
-                  </button>
-                  <button id="btnScanAnother" class="cyber-btn" style="font-size: 0.85rem; padding: 0.7rem;">
-                    🔄 Quét File Mới
-                  </button>
-                </div>
-
-                <!-- Multi-format Exports Grid -->
-                <div style="font-size: 0.9rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.6rem; text-transform: uppercase; letter-spacing: 0.05em;">📥 Xuất Dữ Liệu & Báo Cáo Giám Định Sự Cố:</div>
-                <div style="display: grid; grid-template-columns: 2fr repeat(4, 1fr); gap: 0.6rem;">
-                  <button id="btnExportPdf" class="cyber-btn" style="font-size: 0.88rem; padding: 0.7rem; background: linear-gradient(135deg, #00f0ff, #3b82f6); color: #000; font-weight: 800;">
-                    📄 Xuất Báo Cáo PDF (Times 13pt & Ảnh Bìa)
-                  </button>
-                  <button id="btnExportCsv" class="cyber-btn cyber-btn-outline" style="font-size: 0.8rem; padding: 0.6rem;">📊 File CSV</button>
-                  <button id="btnExportTxt" class="cyber-btn cyber-btn-outline" style="font-size: 0.8rem; padding: 0.6rem;">📝 TXT Log</button>
-                  <button id="btnExportHtml" class="cyber-btn cyber-btn-outline" style="font-size: 0.8rem; padding: 0.6rem;">🌐 HTML Report</button>
-                  <button id="btnExportJson" class="cyber-btn cyber-btn-outline" style="font-size: 0.8rem; padding: 0.6rem;">📥 JSON Raw</button>
-                </div>
-
-                <div id="remediationStatusMsg" style="display: none; margin-top: 1rem; font-size: 0.88rem; padding: 0.8rem 1rem; border-radius: var(--radius-sm); background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: var(--safe);">
-                </div>
+              <div style="display: flex; gap: 0.8rem;">
+                <button class="cyber-btn cyber-btn-outline" onclick="switchToTab('tab-remediation')" style="color: var(--primary); border-color: var(--primary);">🛠️ Xem Kết Quả Khắc Phục</button>
+                <button class="cyber-btn" onclick="switchToTab('tab-vault')">📁 Đến Kho Xử Lý File</button>
               </div>
-
             </div>
 
           </div>
@@ -444,356 +372,273 @@
     </section>
 
     <!-- =========================================================================
-         TAB 2: MODEL ANALYTICS & ACADEMIC REPORTS
+         TAB 2: KẾT QUẢ KHẮC PHỤC (INCIDENT REMEDIATION & RESPONSE)
+         Replaces "Thống Kê & Báo Cáo AI" per user explicit directive
          ========================================================================= -->
-    <section id="tab-analytics" class="tab-content">
+    <section id="tab-remediation" class="tab-content">
       
       <div class="hero-banner">
-        <div class="hero-tag">ACADEMIC BENCHMARKS & EVALUATION</div>
-        <h2 class="hero-title">Thống Kê Mô Hình & Biểu Đồ Nghiên Cứu</h2>
+        <div class="hero-tag">INCIDENT RESPONSE & REMEDIATION ENGINE</div>
+        <h2 class="hero-title">Kế Hoạch & Kết Quả Khắc Phục Sự Cố</h2>
         <p class="hero-desc">
-          Kết quả đánh giá thực nghiệm của 3 Engine Machine Learning trên các tập dữ liệu chuẩn Kaggle (Ma trận nhầm lẫn, Feature Importance, So sánh hiệu năng).
+          Hệ thống điều phối quy trình ứng phó sự cố 4 bước: Cách ly Vault XOR 0x5A, Khử độc tài liệu CDR Disarm, Chặn C2 Server và Tiêu hủy bảo mật theo chuẩn quân sự DoD 5220.22-M.
         </p>
       </div>
 
-      <!-- KHUNG 1: THỐNG KÊ HIỆU NĂNG 3 ENGINE MACHINE LEARNING -->
-      <div style="margin-bottom: 1rem;">
-        <h3 style="font-family: var(--font-heading); font-size: 1.25rem; color: #fff; display: flex; align-items: center; gap: 0.5rem;">
-          <span>📊</span> KHUNG 1: BẢNG THỐNG KÊ HIỆU NĂNG 3 ENGINE MACHINE LEARNING
-        </h3>
-      </div>
-
-      <!-- Overview 3 Models Cards -->
+      <!-- Executive Overview Metric Cards -->
       <div class="models-overview-grid" style="margin-bottom: 2rem;">
+        <div class="glass-card" style="border-left: 4px solid var(--warning);">
+          <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;">🔒 Trạng Thái Vault Cách Ly</div>
+          <div style="font-family: var(--font-heading); font-size: 1.8rem; font-weight: 800; color: var(--warning); margin: 0.3rem 0;" id="remStatVault">Mã Hóa XOR 0x5A</div>
+          <p style="font-size: 0.8rem; color: var(--text-muted);">Vô hiệu hóa 100% mã chạy ngầm, bảo vệ chống Windows Defender tự xóa file mẫu.</p>
+        </div>
         
-        <!-- Model 1: PE Static -->
-        <div class="model-metric-card">
-          <span class="model-badge">ENGINE 1: PE HEADER</span>
-          <h3>Mã Độc File Thực Thi (.exe, .dll)</h3>
-          <p style="font-size: 0.85rem; color: var(--text-muted);">Huấn luyện trên 1.156 mẫu Windows PE với 25 đặc trưng cấu trúc Header.</p>
-          <div class="metric-stats-row">
-            <div class="metric-stat-item">
-              <div class="stat-val">97.41%</div>
-              <div class="stat-name">Accuracy (Độ chính xác)</div>
-            </div>
-            <div class="metric-stat-item">
-              <div class="stat-val">99.13%</div>
-              <div class="stat-name">Recall (Độ nhạy bắt sâu)</div>
-            </div>
-            <div class="metric-stat-item">
-              <div class="stat-val">97.44%</div>
-              <div class="stat-name">F1-Score</div>
-            </div>
-            <div class="metric-stat-item">
-              <div class="stat-val">99.80%</div>
-              <div class="stat-name">ROC-AUC</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Model 2: PDF Structure -->
-        <div class="model-metric-card">
-          <span class="model-badge" style="background: rgba(16, 185, 129, 0.15); color: var(--safe);">ENGINE 2: PDF MALWARE</span>
-          <h3>Mã Độc Tài Liệu PDF (.pdf)</h3>
-          <p style="font-size: 0.85rem; color: var(--text-muted);">Huấn luyện trên 9.109 mẫu tài liệu PDF với 27 thẻ cấu trúc nhúng JavaScript ngầm.</p>
-          <div class="metric-stats-row">
-            <div class="metric-stat-item">
-              <div class="stat-val" style="color: var(--primary);">100.0%</div>
-              <div class="stat-name">Accuracy</div>
-            </div>
-            <div class="metric-stat-item">
-              <div class="stat-val" style="color: var(--primary);">100.0%</div>
-              <div class="stat-name">Precision (Độ chuẩn)</div>
-            </div>
-            <div class="metric-stat-item">
-              <div class="stat-val" style="color: var(--primary);">1.0000</div>
-              <div class="stat-name">F1-Score (Balanced)</div>
-            </div>
-            <div class="metric-stat-item">
-              <div class="stat-val" style="color: var(--primary);">1.0000</div>
-              <div class="stat-name">ROC-AUC</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Model 3: 100k Behavior -->
-        <div class="model-metric-card">
-          <span class="model-badge" style="background: rgba(139, 92, 246, 0.15); color: #c084fc;">ENGINE 3: DYNAMIC BEHAVIOR</span>
-          <h3>Hành Vi Tiến Trình & Bộ Nhớ</h3>
-          <p style="font-size: 0.85rem; color: var(--text-muted);">Huấn luyện trên 100.000 mẫu hành vi tiến trình hệ điều hành (50k malware, 50k benign).</p>
-          <div class="metric-stats-row">
-            <div class="metric-stat-item">
-              <div class="stat-val" style="color: #c084fc;">100.0%</div>
-              <div class="stat-name">Accuracy (100k mẫu)</div>
-            </div>
-            <div class="metric-stat-item">
-              <div class="stat-val" style="color: #c084fc;">100.0%</div>
-              <div class="stat-name">Precision</div>
-            </div>
-            <div class="metric-stat-item">
-              <div class="stat-val" style="color: #c084fc;">1.0000</div>
-              <div class="stat-name">F1-Score</div>
-            </div>
-            <div class="metric-stat-item">
-              <div class="stat-val" style="color: #c084fc;">LightGBM</div>
-              <div class="stat-name">Mô hình tối ưu nhất</div>
-            </div>
-          </div>
-        </div>
-
-      </div>
-
-      <!-- KHUNG 2: TRỌN BỘ BIỂU ĐỒ NGHIÊN CỨU 300 DPI -->
-      <div style="margin-bottom: 1.2rem; display: flex; justify-content: space-between; align-items: center;">
-        <div>
-          <h3 style="font-family: var(--font-heading); font-size: 1.25rem; color: #fff; display: flex; align-items: center; gap: 0.5rem;">
-            <span>📈</span> KHUNG 2: TRỌN BỘ 6 BIỂU ĐỒ NGHIÊN CỨU THỰC NGHIỆM (HIGH-DPI 300 DPI)
-          </h3>
-          <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.2rem;">Nhấp chuột vào bất kỳ biểu đồ nào để xem phóng to ảnh chất lượng cao.</p>
-        </div>
-      </div>
-
-      <div class="reports-gallery">
-        
-        <!-- Chart 1 -->
-        <div class="chart-card">
-          <h4><span>🎯 Ma trận nhầm lẫn PE (Confusion Matrix)</span> <span class="chip">PE Model</span></h4>
-          <div class="chart-img-wrap" onclick="openImageModal('./reports/pe_confusion_matrix.png')">
-            <img src="./reports/pe_confusion_matrix.png" alt="PE Confusion Matrix" loading="lazy">
-          </div>
-        </div>
-
-        <!-- Chart 2 -->
-        <div class="chart-card">
-          <h4><span>⭐ Top 15 Đặc Trưng PE Quan Trọng Nhất</span> <span class="chip">Feature Importance</span></h4>
-          <div class="chart-img-wrap" onclick="openImageModal('./reports/pe_feature_importance.png')">
-            <img src="./reports/pe_feature_importance.png" alt="PE Feature Importance" loading="lazy">
-          </div>
-        </div>
-
-        <!-- Chart 3 -->
-        <div class="chart-card">
-          <h4><span>📈 So sánh 4 thuật toán PE (RF, XGB, LGBM, GB)</span> <span class="chip">Benchmark</span></h4>
-          <div class="chart-img-wrap" onclick="openImageModal('./reports/pe_model_comparison.png')">
-            <img src="./reports/pe_model_comparison.png" alt="PE Model Comparison" loading="lazy">
-          </div>
-        </div>
-
-        <!-- Chart 4 -->
-        <div class="chart-card">
-          <h4><span>🎯 Ma trận nhầm lẫn PDF Malware</span> <span class="chip">PDF Model</span></h4>
-          <div class="chart-img-wrap" onclick="openImageModal('./reports/pdf_confusion_matrix.png')">
-            <img src="./reports/pdf_confusion_matrix.png" alt="PDF Confusion Matrix" loading="lazy">
-          </div>
-        </div>
-
-        <!-- Chart 5 -->
-        <div class="chart-card">
-          <h4><span>⭐ Top 12 Thẻ Cấu Trúc PDF Nhạy Cảm</span> <span class="chip">PDF Features</span></h4>
-          <div class="chart-img-wrap" onclick="openImageModal('./reports/pdf_feature_importance.png')">
-            <img src="./reports/pdf_feature_importance.png" alt="PDF Feature Importance" loading="lazy">
-          </div>
-        </div>
-
-        <!-- Chart 6 -->
-        <div class="chart-card">
-          <h4><span>📈 So sánh thuật toán trên tập 100.000 mẫu</span> <span class="chip">Behavior 100k</span></h4>
-          <div class="chart-img-wrap" onclick="openImageModal('./reports/behavior_model_comparison.png')">
-            <img src="./reports/behavior_model_comparison.png" alt="Behavior Comparison" loading="lazy">
-          </div>
-        </div>
-
-      </div>
-
-    </section>
-
-    <!-- =========================================================================
-         TAB 3: PROCESS BEHAVIOR SIMULATOR (MÔ PHỎNG HÀNH VI 100K MẪU)
-         ========================================================================= -->
-    <section id="tab-simulator" class="tab-content">
-      
-      <div class="hero-banner">
-        <div class="hero-tag">DYNAMIC PROCESS TELEMETRY SIMULATOR</div>
-        <h2 class="hero-title">Mô Phỏng Nhận Diện Hành Vi Tiến Trình</h2>
-        <p class="hero-desc">
-          Thử nghiệm trực tiếp mô hình LightGBM (huấn luyện trên 100.000 mẫu hệ điều hành) bằng cách nhập thông số giám sát luồng thực thi và quản lý bộ nhớ tiến trình.
-        </p>
-      </div>
-
-      <div class="scanner-grid">
-        
-        <!-- KHUNG 1: Input Form -->
-        <div class="glass-card" style="border-left: 4px solid var(--primary);">
-          <div class="card-header">
-            <h3 class="card-title"><span>⚙️</span> KHUNG 1: NHẬP THÔNG SỐ BỘ NHỚ & TIẾN TRÌNH HỆ THỐNG</h3>
-            <div class="preset-buttons">
-              <button class="preset-btn" id="btnPresetBenignProc">🟢 Mẫu Lành Tính</button>
-              <button class="preset-btn" id="btnPresetMalProc">🔴 Mẫu Mã Độc</button>
-            </div>
-          </div>
-
-          <form id="simForm">
-            <div class="sim-form-grid">
-              <div class="sim-input-box">
-                <label>total_vm (Bộ nhớ ảo tổng)</label>
-                <input type="number" id="sim_total_vm" class="cyber-input" value="150" />
-              </div>
-              <div class="sim-input-box">
-                <label>exec_vm (Vùng nhớ thực thi)</label>
-                <input type="number" id="sim_exec_vm" class="cyber-input" value="124" />
-              </div>
-              <div class="sim-input-box">
-                <label>shared_vm (Vùng nhớ chia sẻ)</label>
-                <input type="number" id="sim_shared_vm" class="cyber-input" value="120" />
-              </div>
-              <div class="sim-input-box">
-                <label>map_count (Số phân đoạn map)</label>
-                <input type="number" id="sim_map_count" class="cyber-input" value="6850" />
-              </div>
-              <div class="sim-input-box">
-                <label>nvcsw (Chuyển đổi ngữ cảnh tự nguyện)</label>
-                <input type="number" id="sim_nvcsw" class="cyber-input" value="341974" />
-              </div>
-              <div class="sim-input-box">
-                <label>min_flt (Lỗi trang nhớ nhẹ)</label>
-                <input type="number" id="sim_min_flt" class="cyber-input" value="0" />
-              </div>
-              <div class="sim-input-box">
-                <label>maj_flt (Lỗi trang nhớ nặng)</label>
-                <input type="number" id="sim_maj_flt" class="cyber-input" value="120" />
-              </div>
-              <div class="sim-input-box">
-                <label>utime (Thời gian CPU User)</label>
-                <input type="number" id="sim_utime" class="cyber-input" value="380690" />
-              </div>
-              <div class="sim-input-box">
-                <label>prio (Mức ưu tiên tiến trình)</label>
-                <input type="number" id="sim_prio" class="cyber-input" value="3069378560" />
-              </div>
-            </div>
-
-            <button type="submit" class="cyber-btn" style="width: 100%;">⚡ Chạy Dự Đoán Mô Hình Hành Vi LightGBM</button>
-          </form>
-        </div>
-
-        <!-- KHUNG 2: Sim Results -->
         <div class="glass-card" style="border-left: 4px solid var(--safe);">
-          <div class="card-header">
-            <h3 class="card-title"><span>🧠</span> KHUNG 2: KẾT LUẬN & ĐỘ TIN CẬY DỰ ĐOÁN AI</h3>
-            <span class="chip" style="color: var(--safe); border-color: var(--safe);">Engine LightGBM 100k</span>
-          </div>
-
-          <div id="simResultBox" style="padding: 2rem; text-align: center;">
-            <div id="simIcon" style="font-size: 3.5rem; margin-bottom: 1rem;">🛡️</div>
-            <h3 id="simVerdictTitle" style="font-family: var(--font-heading); font-size: 1.5rem; color: var(--safe); margin-bottom: 0.5rem;">
-              TIẾN TRÌNH LÀNH TÍNH
-            </h3>
-            <p id="simDesc" style="color: var(--text-muted); font-size: 0.95rem; max-width: 400px; margin: 0 auto 1.5rem;">
-              Mô hình xác nhận các chỉ số cấp phát bộ nhớ ảo và chuyển đổi ngữ cảnh phù hợp với tiến trình phần mềm hợp pháp.
-            </p>
-            <div style="background: rgba(15, 23, 42, 0.7); padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle); display: inline-block;">
-              <span style="font-size: 0.8rem; color: var(--text-dim); text-transform: uppercase;">Độ Tin Cậy Mô Hình: </span>
-              <strong id="simProb" style="color: var(--primary); font-size: 1.2rem;">100.0%</strong>
-            </div>
-          </div>
+          <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;">🧹 Khử Độc Tài Liệu (CDR)</div>
+          <div style="font-family: var(--font-heading); font-size: 1.8rem; font-weight: 800; color: var(--safe); margin: 0.3rem 0;" id="remStatCdr">Tước Bỏ Script</div>
+          <p style="font-size: 0.8rem; color: var(--text-muted);">Tước bỏ mã /JavaScript và /OpenAction, tái tạo PDF sạch an toàn.</p>
         </div>
 
+        <div class="glass-card" style="border-left: 4px solid var(--primary);">
+          <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;">🛡️ Đánh Giá An Ninh Hệ Thống</div>
+          <div style="font-family: var(--font-heading); font-size: 1.8rem; font-weight: 800; color: var(--primary); margin: 0.3rem 0;">Sẵn Sàng Ứng Phó</div>
+          <p style="font-size: 0.8rem; color: var(--text-muted);">Tự động chặn C2 Server IP và kiểm soát Registry Run Keys.</p>
+        </div>
+      </div>
+
+      <!-- Remediation Plan Matrix Table -->
+      <div class="glass-card" style="margin-bottom: 2rem; border-left: 4px solid var(--primary);">
+        <div class="card-header">
+          <h3 class="card-title"><span>🛡️</span> Bảng Chi Tiết Phương Pháp Khắc Phục Sự Cố An Ninh (Remediation Plan Matrix)</h3>
+          <span class="chip" style="color: var(--primary); border-color: var(--primary);">STANDARD OPERATING PROCEDURE</span>
+        </div>
+        
+        <div style="width: 100%; overflow-x: auto;">
+          <table class="feature-table" style="width: 100%; border-collapse: collapse; font-size: 0.88rem;">
+            <thead>
+              <tr style="background: rgba(15, 23, 42, 0.9);">
+                <th style="padding: 0.85rem 1rem; width: 8%;">Bước</th>
+                <th style="padding: 0.85rem 1rem; width: 25%;">Tên Biện Pháp Khắc Phục</th>
+                <th style="padding: 0.85rem 1rem;">Cơ Chế Kỹ Thuật Chi Tiết Khắc Phục</th>
+                <th style="padding: 0.85rem 1rem; width: 18%;">Trạng Thái Thực Thi</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style="padding: 0.85rem 1rem;"><strong>BƯỚC 1</strong></td>
+                <td style="padding: 0.85rem 1rem; font-weight: 700; color: var(--warning);">🔒 Cách Ly Vault Bảo Mật</td>
+                <td style="padding: 0.85rem 1rem; color: var(--text-muted); line-height: 1.5;">Mã hóa XOR với byte key <code>0x5A</code> lưu tệp vào thư mục <code>vault/quarantine/</code> và đổi đuôi <code>.quarantined</code>. Ngăn chặn triệt để mã độc tự thực thi ngầm và chống Antivirus tự động xóa nhầm file mẫu chứng cứ.</td>
+                <td style="padding: 0.85rem 1rem;"><span class="chip" style="color:var(--safe); border-color:var(--safe);">Sẵn sàng thực thi</span></td>
+              </tr>
+              <tr>
+                <td style="padding: 0.85rem 1rem;"><strong>BƯỚC 2</strong></td>
+                <td style="padding: 0.85rem 1rem; font-weight: 700; color: var(--safe);">🧹 Khử Độc Tài Liệu (CDR Disarm)</td>
+                <td style="padding: 0.85rem 1rem; color: var(--text-muted); line-height: 1.5;">Công nghệ Content Disarm & Reconstruction tước bỏ 100% các đoạn mã nhúng độc hại (<code>/JavaScript</code>, <code>/OpenAction</code>, <code>/Launch</code>, <code>/EmbeddedFiles</code>), tái tạo tệp PDF nguyên bản sạch an toàn.</td>
+                <td style="padding: 0.85rem 1rem;"><span class="chip" style="color:#60a5fa; border-color:#3b82f6;">Khuyên dùng (PDF)</span></td>
+              </tr>
+              <tr>
+                <td style="padding: 0.85rem 1rem;"><strong>BƯỚC 3</strong></td>
+                <td style="padding: 0.85rem 1rem; font-weight: 700; color: #f97316;">🌐 Chặn C2 & Cleanup Registry</td>
+                <td style="padding: 0.85rem 1rem; color: var(--text-muted); line-height: 1.5;">Chặn các địa chỉ IP / Domain ngầm kết nối Command & Control (C2) Server trên Firewall, đồng thời tự động rà soát và xóa các điểm khởi động ngầm trong Windows Registry (<code>HKCU\Software\Microsoft\Windows\CurrentVersion\Run</code>).</td>
+                <td style="padding: 0.85rem 1rem;"><span class="chip" style="color:var(--warning); border-color:var(--warning);">Tự động quét</span></td>
+              </tr>
+              <tr>
+                <td style="padding: 0.85rem 1rem;"><strong>BƯỚC 4</strong></td>
+                <td style="padding: 0.85rem 1rem; font-weight: 700; color: var(--danger);">💣 Tiêu Hủy Vĩnh Viễn (DoD 5220.22-M)</td>
+                <td style="padding: 0.85rem 1rem; color: var(--text-muted); line-height: 1.5;">Thực hiện ghi đè 3 lượt dữ liệu (Lượt 1: 0x00, Lượt 2: 0xFF, Lượt 3: Cryptographic Random Bytes) theo chuẩn Bộ Quốc Phòng Mỹ DoD 5220.22-M, xóa sạch dấu vết tệp tin khỏi ổ đĩa không thể khôi phục.</td>
+                <td style="padding: 0.85rem 1rem;"><span class="chip" style="color:var(--danger); border-color:var(--danger);">Tùy chọn khẩn cấp</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Live Remediation Control Panel & Terminal Console -->
+      <div class="glass-card" style="margin-bottom: 2rem; border-left: 4px solid var(--safe);">
+        <div class="card-header">
+          <h3 class="card-title"><span>⚡</span> Trung Tâm Kích Hoạt Lệnh Khắc Phục Khẩn Cấp</h3>
+          <span class="chip">Live Controls</span>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1.5rem;">
+          <button id="btnTabRemediateQuarantine" class="cyber-btn cyber-btn-outline" style="font-size: 0.88rem; padding: 0.8rem; color: var(--warning); border-color: rgba(245, 158, 11, 0.5);">
+            🔒 Cách Ly Tệp Tin Vào Vault
+          </button>
+          <button id="btnTabRemediateDisarm" class="cyber-btn cyber-btn-outline" style="font-size: 0.88rem; padding: 0.8rem; color: var(--safe); border-color: rgba(16, 185, 129, 0.5);">
+            🧹 Khử Độc Tài Liệu (CDR)
+          </button>
+          <button id="btnTabRemediateShred" class="cyber-btn cyber-btn-outline" style="font-size: 0.88rem; padding: 0.8rem; color: var(--danger); border-color: rgba(244, 63, 94, 0.5);">
+            💣 Tiêu Hủy DoD 5220.22-M
+          </button>
+          <button id="btnTabRemediateExportPdf" class="cyber-btn" style="font-size: 0.88rem; padding: 0.8rem; background: linear-gradient(135deg, #00f0ff, #3b82f6); color: #000; font-weight: 800;">
+            📄 Xuất Báo Cáo PDF
+          </button>
+        </div>
+
+        <!-- Real-time Terminal Log Console -->
+        <div style="background: rgba(8, 12, 20, 0.95); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 1.2rem; font-family: var(--font-mono); font-size: 0.85rem; line-height: 1.6;">
+          <div style="color: var(--text-dim); margin-bottom: 0.5rem; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255, 255, 255, 0.05); padding-bottom: 0.4rem;">
+            <span>💻 TERMINAL LOG KHẮC PHỤC SỰ CỐ:</span>
+            <span style="color: var(--safe);">STATUS: ACTIVE</span>
+          </div>
+          <div id="remediationLogConsole" style="color: var(--primary); min-height: 90px; max-height: 200px; overflow-y: auto;">
+            > Hệ thống sẵn sàng thực thi các phương án khắc phục sự cố.<br>
+            > Nhấp chọn các hành động phía trên để tiến hành xử lý tệp tin mẫu...
+          </div>
+        </div>
+      </div>
+
+      <!-- Security Policies & Best Practice Cards -->
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+        <div class="glass-card" style="border-left: 3px solid #3b82f6;">
+          <h4 style="color: #fff; margin-bottom: 0.5rem;">📋 Khuyến Nghị Chính Sách Bảo Mật Cho Quản Trị Viên</h4>
+          <ul style="font-size: 0.85rem; color: var(--text-muted); padding-left: 1.2rem; line-height: 1.7;">
+            <li>Cấu hình GPO ngăn chặn hiển thị ẩn đuôi tệp tin trên Windows File Explorer.</li>
+            <li>Tắt tính năng tự động chạy JavaScript trên Adobe Acrobat Reader (Preferences -> JavaScript -> Uncheck Enable).</li>
+            <li>Đóng cổng SMBv1 (Port 445) trên Windows Firewall để ngăn chặn virus tống tiền EternalBlue.</li>
+          </ul>
+        </div>
+
+        <div class="glass-card" style="border-left: 3px solid var(--safe);">
+          <h4 style="color: #fff; margin-bottom: 0.5rem;">🛡️ Cơ Chế Bảo Vệ Tự Động MalwareGuardian AI</h4>
+          <p style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.6;">
+            Tất cả các tệp tin nguy hiểm khi tải lên sẽ được tự động cách ly vào vùng nhớ đệm bảo mật (Vault Isolation), đảm bảo mã độc không thể phát tán ra môi trường hệ điều hành thực.
+          </p>
+        </div>
       </div>
 
     </section>
 
     <!-- =========================================================================
-         TAB 4: ARCHITECTURE & METHODOLOGY
+         TAB 3: XỬ LÝ FILE SAU KHI HOÀN TẤT (POST-PROCESSING FILE MANAGEMENT & VAULT)
+         Replaces "Mô Phỏng Tiến Trình" & "Kiến Trúc & Dataset" per user directive
          ========================================================================= -->
-    <section id="tab-docs" class="tab-content">
+    <section id="tab-vault" class="tab-content">
       
       <div class="hero-banner">
-        <div class="hero-tag">SYSTEM ARCHITECTURE & METHODOLOGY</div>
-        <h2 class="hero-title">Kiến Trúc Hệ Thống & Phương Pháp Luận</h2>
+        <div class="hero-tag">POST-PROCESSING FILE MANAGEMENT & VAULT</div>
+        <h2 class="hero-title">Xử Lý File Sau Khi Hoàn Tất & Kho Vault</h2>
         <p class="hero-desc">
-          Tài liệu tổng quan kiến trúc phân tích mã độc đa tầng ứng dụng Trí Tuệ Nhân Tạo (Machine Learning).
+          Trung tâm quản lý tệp tin sau phân tích: Tải tệp PDF sạch đã khử độc CDR, giải mã tệp cách ly XOR 0x5A, khôi phục hoặc tiêu hủy tệp tin an toàn.
         </p>
       </div>
 
-      <!-- KHUNG 1: SƠ ĐỒ KIẾN TRÚC -->
+      <!-- Vault Quick Stats -->
+      <div class="models-overview-grid" style="margin-bottom: 2rem;">
+        <div class="glass-card" style="border-left: 4px solid var(--primary);">
+          <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;">📂 Tổng Số Tệp Đã Giám Định</div>
+          <div style="font-family: var(--font-heading); font-size: 2rem; font-weight: 800; color: var(--primary); margin: 0.2rem 0;" id="vaultTotalScanned">4 Tệp Mẫu</div>
+          <p style="font-size: 0.8rem; color: var(--text-muted);">Sẵn sàng thực hiện các thao tác xử lý sau giám định.</p>
+        </div>
+
+        <div class="glass-card" style="border-left: 4px solid var(--safe);">
+          <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;">🧹 File Đã Khử Độc An Toàn (CDR)</div>
+          <div style="font-family: var(--font-heading); font-size: 2rem; font-weight: 800; color: var(--safe); margin: 0.2rem 0;">100% Sạch Script</div>
+          <p style="font-size: 0.8rem; color: var(--text-muted);">Tệp PDF đã được loại bỏ hoàn toàn mã JavaScript ngầm.</p>
+        </div>
+
+        <div class="glass-card" style="border-left: 4px solid var(--warning);">
+          <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;">🔒 Thuật Toán Bảo Vệ Vault</div>
+          <div style="font-family: var(--font-heading); font-size: 1.5rem; font-weight: 800; color: var(--warning); margin: 0.4rem 0;">XOR Key 0x5A Cipher</div>
+          <p style="font-size: 0.8rem; color: var(--text-muted);">Đảo bit byte dữ liệu ngăn Antivirus tự xóa file mẫu.</p>
+        </div>
+      </div>
+
+      <!-- Main File Processing Manager Table -->
       <div class="glass-card" style="margin-bottom: 2rem; border-left: 4px solid var(--primary);">
-        <h3 style="font-family: var(--font-heading); font-size: 1.3rem; margin-bottom: 1rem; color: var(--primary); display: flex; align-items: center; gap: 0.5rem;">
-          <span>🗺️</span> KHUNG 1: SƠ ĐỒ KIẾN TRÚC MÁY TRẠM ĐA TẦNG (MULTI-ENGINE DEFENSE PIPELINE)
-        </h3>
-        <p style="color: var(--text-muted); margin-bottom: 1.5rem;">
-          Hệ thống được thiết kế theo mô hình điều phối phân tầng (Dispatcher Pattern) tương tự các giải pháp EDR / Antivirus hiện đại:
-        </p>
+        <div class="card-header">
+          <h3 class="card-title"><span>📁</span> Bảng Danh Sách File Đã Xử Lý & Quản Lý Kho Vault</h3>
+          <button id="btnRefreshVaultList" class="copy-btn" style="color: var(--primary); border: 1px solid var(--primary); padding: 0.3rem 0.8rem; border-radius: var(--radius-sm);">🔄 Cập Nhật Danh Sách</button>
+        </div>
+
+        <div style="width: 100%; overflow-x: auto;">
+          <table class="feature-table" style="width: 100%; border-collapse: collapse; font-size: 0.85rem;">
+            <thead>
+              <tr style="background: rgba(15, 23, 42, 0.9);">
+                <th style="padding: 0.75rem 1rem;">Tên Tệp Tin</th>
+                <th style="padding: 0.75rem 1rem; width: 12%;">Dung Lượng</th>
+                <th style="padding: 0.75rem 1rem; width: 15%;">Định Dạng</th>
+                <th style="padding: 0.75rem 1rem; width: 22%;">Trạng Thái Xử Lý</th>
+                <th style="padding: 0.75rem 1rem; width: 28%; text-align: center;">Thao Tác Trực Tiếp</th>
+              </tr>
+            </thead>
+            <tbody id="processedFilesTableBody">
+              <!-- Dynamic Rows populated by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Quick Operations Grid: CDR Sanitizer Dropzone & Vault XOR Inspector -->
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem;">
         
-        <div style="background: rgba(15, 23, 42, 0.8); padding: 1.5rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle); font-family: var(--font-mono); font-size: 0.85rem; line-height: 1.8;">
-          [ Tệp tin tải lên / Chọn từ thiết bị ]<br>
-          &nbsp;&nbsp;&nbsp;&nbsp;│<br>
-          &nbsp;&nbsp;&nbsp;&nbsp;▼<br>
-          &nbsp;&nbsp;<strong>BƯỚC 1:</strong> Xác thực Magic Bytes & Kiểm tra Giả mạo đuôi (Extension Spoofing Detection)<br>
-          &nbsp;&nbsp;<strong>BƯỚC 2:</strong> Tính mã băm (MD5 / SHA-256) & Đo độ hỗn loạn dữ liệu (Shannon Entropy)<br>
-          &nbsp;&nbsp;&nbsp;&nbsp;│<br>
-          &nbsp;&nbsp;&nbsp;&nbsp;├─► <strong>Định dạng PE (EXE, DLL, SYS):</strong> Gọi <code>parsePE()</code> ➔ Mô hình Random Forest PE (Acc: 97.4%)<br>
-          &nbsp;&nbsp;&nbsp;&nbsp;├─► <strong>Định dạng PDF:</strong> Gọi <code>parsePDF()</code> ➔ Mô hình Random Forest PDF (Acc: 100%)<br>
-          &nbsp;&nbsp;&nbsp;&nbsp;├─► <strong>Định dạng Khác:</strong> Động cơ Heuristic & Phân tích Shannon Entropy chống Ransomware<br>
-          &nbsp;&nbsp;&nbsp;&nbsp;│<br>
-          &nbsp;&nbsp;&nbsp;&nbsp;▼<br>
-          [ Báo Cáo Bảo Mật Toàn Diện & Xuất Dữ Liệu JSON / PDF ]
+        <!-- Left: CDR Sanitizer Dropzone -->
+        <div class="glass-card" style="border-left: 4px solid var(--safe);">
+          <div style="font-weight: 700; font-size: 1rem; margin-bottom: 0.8rem; color: #fff; display: flex; align-items: center; justify-content: space-between;">
+            <span>🧹 Công Cụ Khử Độc Tài Liệu PDF (CDR Instant Sanitizer)</span>
+            <span class="chip" style="color: var(--safe); border-color: var(--safe);">CDR Engine</span>
+          </div>
+          <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">
+            Thả tệp PDF cần khử độc trực tiếp vào đây. Hệ thống sẽ ngay lập tức loại bỏ toàn bộ <code>/JavaScript</code>, <code>/OpenAction</code> và xuất bản PDF sạch an toàn 100%.
+          </p>
+          <div class="dropzone" id="cdrDropzone" style="padding: 1.8rem 1rem; border-color: rgba(16, 185, 129, 0.4);">
+            <input type="file" id="cdrFileInput" accept=".pdf" style="display: none;" />
+            <div class="dropzone-icon" style="background: rgba(16, 185, 129, 0.15); color: var(--safe); border-color: rgba(16, 185, 129, 0.3);">📄</div>
+            <div class="dropzone-prompt">
+              <h3 style="font-size: 1rem;">Kéo thả tệp PDF vào đây để khử độc</h3>
+              <p style="font-size: 0.8rem;">Hoặc nhấp để chọn tệp PDF từ máy tính</p>
+            </div>
+          </div>
         </div>
-      </div>
 
-      <!-- KHUNG 2: BỘ DỮ LIỆU DATASETS -->
-      <div style="margin-bottom: 1rem;">
-        <h3 style="font-family: var(--font-heading); font-size: 1.25rem; color: #fff; display: flex; align-items: center; gap: 0.5rem;">
-          <span>📦</span> KHUNG 2: TỔNG QUAN 3 BỘ DỮ LIỆU HUẤN LUYỆN (DATASETS)
-        </h3>
-      </div>
+        <!-- Right: Vault XOR Encryption Inspector -->
+        <div class="glass-card" style="border-left: 4px solid var(--primary);">
+          <div style="font-weight: 700; font-size: 1rem; margin-bottom: 0.8rem; color: #fff; display: flex; align-items: center; justify-content: space-between;">
+            <span>🔒 Trình Kiểm Tra Chuỗi Byte Mã Hóa Vault (XOR 0x5A)</span>
+            <span class="chip" style="color: var(--primary); border-color: var(--primary);">Vault Inspector</span>
+          </div>
+          <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">
+            Xem trước 32 Hex Bytes của tệp tin trước và sau khi thực hiện mã hóa XOR <code>0x5A</code> cách ly an toàn:
+          </p>
+          <div style="background: rgba(8, 12, 20, 0.9); padding: 0.8rem; border-radius: var(--radius-sm); font-family: var(--font-mono); font-size: 0.78rem; line-height: 1.6; color: var(--primary);">
+            <div>[RAW BYTES ]: 4D 5A 90 00 03 00 00 00 04 00 00 00 FF FF 00 00...</div>
+            <div style="color: var(--warning); margin-top: 0.4rem;">[XOR 0x5A ENCRYPTED]: 17 00 CA 5A 59 5A 5A 5A 5E 5A 5A 5A A5 A5 5A 5A...</div>
+            <div style="color: var(--safe); margin-top: 0.4rem;">[STATUS     ]: EXECUTABLE CODE NEUTRALIZED (100% SAFE)</div>
+          </div>
+        </div>
 
-      <div class="models-overview-grid">
-        <div class="glass-card">
-          <h4 style="color: var(--primary); margin-bottom: 0.5rem;">Dataset 1: Windows PE</h4>
-          <p style="font-size: 0.85rem; color: var(--text-muted);">
-            Bộ dữ liệu 1.156 mẫu PE gồm 25 thuộc tính quan trọng: SizeOfCode, AddressOfEntryPoint, Section Entropy, DllCharacteristics, Imports, Exports...
-          </p>
-        </div>
-        <div class="glass-card">
-          <h4 style="color: var(--safe); margin-bottom: 0.5rem;">Dataset 2: Contagio PDF</h4>
-          <p style="font-size: 0.85rem; color: var(--text-muted);">
-            Trích xuất từ nguồn học thuật Contagio Dump qua các công cụ PDFiD, PDF-parser với 27 đặc trưng cấu trúc (/JavaScript, /OpenAction, /XFA, Stream...).
-          </p>
-        </div>
-        <div class="glass-card">
-          <h4 style="color: #c084fc; margin-bottom: 0.5rem;">Dataset 3: 100k Behavior</h4>
-          <p style="font-size: 0.85rem; color: var(--text-muted);">
-            Tập dữ liệu lớn 100.000 bản ghi giám sát 33 chỉ số tiến trình hệ điều hành (Virtual memory, context switch, page faults) cân bằng hoàn hảo 50k - 50k.
-          </p>
-        </div>
       </div>
 
     </section>
 
   </main>
 
-  <!-- QUARANTINE VAULT EXPLORER MODAL -->
-  <div class="modal-overlay" id="vaultModal">
-    <div class="modal-content glass-card" style="width: 850px; max-width: 95vw; max-height: 85vh; overflow-y: auto; padding: 1.5rem; position: relative;" onclick="event.stopPropagation()">
-      <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border-subtle); padding-bottom: 0.8rem; margin-bottom: 1rem;">
-        <h3 style="font-family: var(--font-heading); font-size: 1.2rem; color: #fff; display: flex; align-items: center; gap: 0.5rem; margin: 0;">
-          <span>📁</span> <span>Vùng Cách Ly Bảo Vệ (Quarantine Vault Explorer)</span>
-        </h3>
-        <button id="btnCloseVaultModal" style="background: none; border: none; color: var(--text-muted); font-size: 1.5rem; cursor: pointer; transition: color 0.2s;" title="Đóng">&times;</button>
+  <!-- Footer -->
+  <footer style="text-align: center; padding: 2rem; border-top: 1px solid var(--border-subtle); color: var(--text-dim); font-size: 0.85rem;">
+    MalwareGuardian AI &copy; 2026 - Hệ Thống Phân Tích & Khắc Phục Mã Độc Đa Tầng Client-Side
+  </footer>
+
+  <!-- Vault Modal Explorer Pop-up -->
+  <div id="vaultModal" class="modal-overlay">
+    <div class="glass-card" style="width: 800px; max-width: 95vw; max-height: 90vh; overflow-y: auto;">
+      <div class="card-header">
+        <h3 class="card-title"><span>📁</span> Vùng Bảo Mật Vault (Quarantine Vault Manager)</h3>
+        <button id="btnCloseVaultModal" class="modal-close">&times;</button>
       </div>
-      <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 1.2rem; line-height: 1.5;">
-        Các tệp tin dưới đây đã được mã hóa XOR 0x5A an toàn và lưu trữ trong thư mục <code>vault/quarantine/</code>. Mã nhị phân đã bị vô hiệu hóa hoàn toàn, giúp ngăn ngừa Windows Defender tự ý xóa mất dữ liệu điều tra.
-      </p>
-      
-      <div style="overflow-x: auto; max-height: 380px; overflow-y: auto;">
-        <table class="feature-table" style="width: 100%; border-collapse: collapse;">
+
+      <div style="margin-bottom: 1rem; font-size: 0.85rem; color: var(--text-muted);">
+        Danh sách các tệp tin đã được mã hóa XOR <code>0x5A</code> lưu tại <code>vault/quarantine/</code>. Các tệp này hoàn toàn bị vô hiệu hóa mã chạy ngầm.
+      </div>
+
+      <div style="width: 100%; overflow-x: auto;">
+        <table class="feature-table" style="width: 100%;">
           <thead>
-            <tr style="background: rgba(15, 23, 42, 0.9);">
-              <th style="padding: 0.6rem 0.8rem; font-size: 0.8rem; color: var(--primary);">Tên Tập Tin Gốc</th>
-              <th style="padding: 0.6rem 0.8rem; font-size: 0.8rem; color: var(--primary);">Dung Lượng</th>
-              <th style="padding: 0.6rem 0.8rem; font-size: 0.8rem; color: var(--primary);">Thời Gian Cách Ly</th>
-              <th style="padding: 0.6rem 0.8rem; font-size: 0.8rem; color: var(--primary);">Trạng Thái</th>
-              <th style="padding: 0.6rem 0.8rem; font-size: 0.8rem; color: var(--primary); text-align: center;">Hành Động</th>
+            <tr>
+              <th>Tên Tệp Gốc</th>
+              <th>Dung Lượng</th>
+              <th>Thời Gian Cách Ly</th>
+              <th>Trạng Thái XOR</th>
+              <th style="text-align: center;">Thao Tác</th>
             </tr>
           </thead>
           <tbody id="vaultTableBody">
@@ -801,27 +646,22 @@
           </tbody>
         </table>
       </div>
-      
-      <div id="vaultEmptyMsg" style="display: none; text-align: center; padding: 2rem; color: var(--text-dim); font-size: 0.9rem;">
-        🔒 Vùng cách ly hiện tại chưa có tệp tin nào.
+
+      <div id="vaultEmptyMsg" style="display: none; padding: 2rem; text-align: center; color: var(--text-dim);">
+        Chưa có tệp tin nào trong vùng cách ly Vault.
       </div>
     </div>
   </div>
 
-  <!-- Modal for Image Enlargement -->
-  <div class="modal-overlay" id="imgModal" onclick="closeImageModal()">
-
-    <div class="modal-content" onclick="event.stopPropagation()">
+  <!-- Image Preview Modal -->
+  <div id="imgModal" class="modal-overlay" onclick="closeImageModal()">
+    <div class="modal-content">
       <button class="modal-close" onclick="closeImageModal()">&times;</button>
-      <img id="modalImg" src="" alt="Enlarged Report Chart" />
+      <img id="modalImg" src="" alt="Chart Zoom">
     </div>
   </div>
 
-  <!-- Client-Side PDF Generation Engines (jsPDF & AutoTable) -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
-
-  <!-- JavaScript Application Logic -->
+  <!-- JavaScript -->
   <script src="./static/js/app.js"></script>
 </body>
 </html>
