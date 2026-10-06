@@ -33,7 +33,7 @@
         </div>
       </a>
 
-      <!-- Navigation Tabs (Replaced per user directive) -->
+      <!-- Navigation Tabs (5 Complete Tabs) -->
       <nav class="nav-tabs" id="navTabs">
         <button class="nav-tab-btn active" data-tab="tab-scanner">
           <span>🛡️</span> Quét File Trực Tuyến
@@ -43,6 +43,12 @@
         </button>
         <button class="nav-tab-btn" data-tab="tab-vault">
           <span>📁</span> Xử Lý File Sau Khi Hoàn Tất
+        </button>
+        <button class="nav-tab-btn" data-tab="tab-analytics">
+          <span>📊</span> Thống Kê & Biểu Đồ Dataset
+        </button>
+        <button class="nav-tab-btn" data-tab="tab-docs">
+          <span>📖</span> Kiến Trúc & Dataset
         </button>
       </nav>
 
@@ -373,7 +379,6 @@
 
     <!-- =========================================================================
          TAB 2: KẾT QUẢ KHẮC PHỤC (INCIDENT REMEDIATION & RESPONSE)
-         Replaces "Thống Kê & Báo Cáo AI" per user explicit directive
          ========================================================================= -->
     <section id="tab-remediation" class="tab-content">
       
@@ -488,30 +493,10 @@
         </div>
       </div>
 
-      <!-- Security Policies & Best Practice Cards -->
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
-        <div class="glass-card" style="border-left: 3px solid #3b82f6;">
-          <h4 style="color: #fff; margin-bottom: 0.5rem;">📋 Khuyến Nghị Chính Sách Bảo Mật Cho Quản Trị Viên</h4>
-          <ul style="font-size: 0.85rem; color: var(--text-muted); padding-left: 1.2rem; line-height: 1.7;">
-            <li>Cấu hình GPO ngăn chặn hiển thị ẩn đuôi tệp tin trên Windows File Explorer.</li>
-            <li>Tắt tính năng tự động chạy JavaScript trên Adobe Acrobat Reader (Preferences -> JavaScript -> Uncheck Enable).</li>
-            <li>Đóng cổng SMBv1 (Port 445) trên Windows Firewall để ngăn chặn virus tống tiền EternalBlue.</li>
-          </ul>
-        </div>
-
-        <div class="glass-card" style="border-left: 3px solid var(--safe);">
-          <h4 style="color: #fff; margin-bottom: 0.5rem;">🛡️ Cơ Chế Bảo Vệ Tự Động MalwareGuardian AI</h4>
-          <p style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.6;">
-            Tất cả các tệp tin nguy hiểm khi tải lên sẽ được tự động cách ly vào vùng nhớ đệm bảo mật (Vault Isolation), đảm bảo mã độc không thể phát tán ra môi trường hệ điều hành thực.
-          </p>
-        </div>
-      </div>
-
     </section>
 
     <!-- =========================================================================
          TAB 3: XỬ LÝ FILE SAU KHI HOÀN TẤT (POST-PROCESSING FILE MANAGEMENT & VAULT)
-         Replaces "Mô Phỏng Tiến Trình" & "Kiến Trúc & Dataset" per user directive
          ========================================================================= -->
     <section id="tab-vault" class="tab-content">
       
@@ -607,6 +592,239 @@
           </div>
         </div>
 
+      </div>
+
+    </section>
+
+    <!-- =========================================================================
+         TAB 4: MODEL ANALYTICS & ACADEMIC DATASET BENCHMARKS
+         Re-added per user request to demonstrate dataset training evaluation
+         ========================================================================= -->
+    <section id="tab-analytics" class="tab-content">
+      
+      <div class="hero-banner">
+        <div class="hero-tag">ACADEMIC BENCHMARKS & EVALUATION DATASET PROOFS</div>
+        <h2 class="hero-title">Thống Kê Mô Hình & Biểu Đồ Nghiên Cứu Dataset</h2>
+        <p class="hero-desc">
+          Kết quả đánh giá thực nghiệm của 3 Engine Machine Learning trên các tập dữ liệu chuẩn Kaggle PE, Contagio PDF và 100.000 mẫu tiến trình (Ma trận nhầm lẫn, Feature Importance, So sánh thuật toán).
+        </p>
+      </div>
+
+      <!-- KHUNG 1: THỐNG KÊ HIỆU NĂNG 3 ENGINE MACHINE LEARNING -->
+      <div style="margin-bottom: 1rem;">
+        <h3 style="font-family: var(--font-heading); font-size: 1.25rem; color: #fff; display: flex; align-items: center; gap: 0.5rem;">
+          <span>📊</span> KHUNG 1: BẢNG THỐNG KÊ HIỆU NĂNG 3 ENGINE MACHINE LEARNING
+        </h3>
+      </div>
+
+      <!-- Overview 3 Models Cards -->
+      <div class="models-overview-grid" style="margin-bottom: 2rem;">
+        
+        <!-- Model 1: PE Static -->
+        <div class="model-metric-card">
+          <span class="model-badge">ENGINE 1: PE HEADER</span>
+          <h3>Mã Độc File Thực Thi (.exe, .dll)</h3>
+          <p style="font-size: 0.85rem; color: var(--text-muted);">Huấn luyện trên 1.156 mẫu Windows PE với 25 đặc trưng cấu trúc Header.</p>
+          <div class="metric-stats-row">
+            <div class="metric-stat-item">
+              <div class="stat-val">97.41%</div>
+              <div class="stat-name">Accuracy (Độ chính xác)</div>
+            </div>
+            <div class="metric-stat-item">
+              <div class="stat-val">99.13%</div>
+              <div class="stat-name">Recall (Độ nhạy bắt sâu)</div>
+            </div>
+            <div class="metric-stat-item">
+              <div class="stat-val">97.44%</div>
+              <div class="stat-name">F1-Score</div>
+            </div>
+            <div class="metric-stat-item">
+              <div class="stat-val">99.80%</div>
+              <div class="stat-name">ROC-AUC</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Model 2: PDF Structure -->
+        <div class="model-metric-card">
+          <span class="model-badge" style="background: rgba(16, 185, 129, 0.15); color: var(--safe);">ENGINE 2: PDF MALWARE</span>
+          <h3>Mã Độc Tài Liệu PDF (.pdf)</h3>
+          <p style="font-size: 0.85rem; color: var(--text-muted);">Huấn luyện trên 9.109 mẫu tài liệu PDF với 27 thẻ cấu trúc nhúng JavaScript ngầm.</p>
+          <div class="metric-stats-row">
+            <div class="metric-stat-item">
+              <div class="stat-val" style="color: var(--primary);">100.0%</div>
+              <div class="stat-name">Accuracy</div>
+            </div>
+            <div class="metric-stat-item">
+              <div class="stat-val" style="color: var(--primary);">100.0%</div>
+              <div class="stat-name">Precision (Độ chuẩn)</div>
+            </div>
+            <div class="metric-stat-item">
+              <div class="stat-val" style="color: var(--primary);">1.0000</div>
+              <div class="stat-name">F1-Score (Balanced)</div>
+            </div>
+            <div class="metric-stat-item">
+              <div class="stat-val" style="color: var(--primary);">1.0000</div>
+              <div class="stat-name">ROC-AUC</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Model 3: 100k Behavior -->
+        <div class="model-metric-card">
+          <span class="model-badge" style="background: rgba(139, 92, 246, 0.15); color: #c084fc;">ENGINE 3: DYNAMIC BEHAVIOR</span>
+          <h3>Hành Vi Tiến Trình & Bộ Nhớ</h3>
+          <p style="font-size: 0.85rem; color: var(--text-muted);">Huấn luyện trên 100.000 mẫu hành vi tiến trình hệ điều hành (50k malware, 50k benign).</p>
+          <div class="metric-stats-row">
+            <div class="metric-stat-item">
+              <div class="stat-val" style="color: #c084fc;">100.0%</div>
+              <div class="stat-name">Accuracy (100k mẫu)</div>
+            </div>
+            <div class="metric-stat-item">
+              <div class="stat-val" style="color: #c084fc;">100.0%</div>
+              <div class="stat-name">Precision</div>
+            </div>
+            <div class="metric-stat-item">
+              <div class="stat-val" style="color: #c084fc;">1.0000</div>
+              <div class="stat-name">F1-Score</div>
+            </div>
+            <div class="metric-stat-item">
+              <div class="stat-val" style="color: #c084fc;">LightGBM</div>
+              <div class="stat-name">Mô hình tối ưu nhất</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- KHUNG 2: TRỌN BỘ BIỂU ĐỒ NGHIÊN CỨU 300 DPI -->
+      <div style="margin-bottom: 1.2rem; display: flex; justify-content: space-between; align-items: center;">
+        <div>
+          <h3 style="font-family: var(--font-heading); font-size: 1.25rem; color: #fff; display: flex; align-items: center; gap: 0.5rem;">
+            <span>📈</span> KHUNG 2: TRỌN BỘ 6 BIỂU ĐỒ NGHIÊN CỨU THỰC NGHIỆM DATASET (HIGH-DPI 300 DPI)
+          </h3>
+          <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.2rem;">Nhấp chuột vào bất kỳ biểu đồ nào để xem phóng to ảnh chất lượng cao.</p>
+        </div>
+      </div>
+
+      <div class="reports-gallery">
+        
+        <!-- Chart 1 -->
+        <div class="chart-card">
+          <h4><span>🎯 Ma trận nhầm lẫn PE (Confusion Matrix)</span> <span class="chip">PE Model</span></h4>
+          <div class="chart-img-wrap" onclick="openImageModal('/reports/pe_confusion_matrix.png')">
+            <img src="/reports/pe_confusion_matrix.png" alt="PE Confusion Matrix" loading="lazy">
+          </div>
+        </div>
+
+        <!-- Chart 2 -->
+        <div class="chart-card">
+          <h4><span>⭐ Top 15 Đặc Trưng PE Quan Trọng Nhất</span> <span class="chip">Feature Importance</span></h4>
+          <div class="chart-img-wrap" onclick="openImageModal('/reports/pe_feature_importance.png')">
+            <img src="/reports/pe_feature_importance.png" alt="PE Feature Importance" loading="lazy">
+          </div>
+        </div>
+
+        <!-- Chart 3 -->
+        <div class="chart-card">
+          <h4><span>📈 So sánh 4 thuật toán PE (RF, XGB, LGBM, GB)</span> <span class="chip">Benchmark</span></h4>
+          <div class="chart-img-wrap" onclick="openImageModal('/reports/pe_model_comparison.png')">
+            <img src="/reports/pe_model_comparison.png" alt="PE Model Comparison" loading="lazy">
+          </div>
+        </div>
+
+        <!-- Chart 4 -->
+        <div class="chart-card">
+          <h4><span>🎯 Ma trận nhầm lẫn PDF Malware</span> <span class="chip">PDF Model</span></h4>
+          <div class="chart-img-wrap" onclick="openImageModal('/reports/pdf_confusion_matrix.png')">
+            <img src="/reports/pdf_confusion_matrix.png" alt="PDF Confusion Matrix" loading="lazy">
+          </div>
+        </div>
+
+        <!-- Chart 5 -->
+        <div class="chart-card">
+          <h4><span>⭐ Top 12 Thẻ Cấu Trúc PDF Nhạy Cảm</span> <span class="chip">PDF Features</span></h4>
+          <div class="chart-img-wrap" onclick="openImageModal('/reports/pdf_feature_importance.png')">
+            <img src="/reports/pdf_feature_importance.png" alt="PDF Feature Importance" loading="lazy">
+          </div>
+        </div>
+
+        <!-- Chart 6 -->
+        <div class="chart-card">
+          <h4><span>📈 So sánh thuật toán trên tập 100.000 mẫu</span> <span class="chip">Behavior 100k</span></h4>
+          <div class="chart-img-wrap" onclick="openImageModal('/reports/behavior_model_comparison.png')">
+            <img src="/reports/behavior_model_comparison.png" alt="Behavior Comparison" loading="lazy">
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- =========================================================================
+         TAB 5: SYSTEM ARCHITECTURE & METHODOLOGY
+         ========================================================================= -->
+    <section id="tab-docs" class="tab-content">
+      
+      <div class="hero-banner">
+        <div class="hero-tag">SYSTEM ARCHITECTURE & METHODOLOGY</div>
+        <h2 class="hero-title">Kiến Trúc Hệ Thống & Phương Pháp Luận</h2>
+        <p class="hero-desc">
+          Tài liệu tổng quan kiến trúc phân tích mã độc đa tầng ứng dụng Trí Tuệ Nhân Tạo (Machine Learning).
+        </p>
+      </div>
+
+      <!-- KHUNG 1: SƠ ĐỒ KIẾN TRÚC -->
+      <div class="glass-card" style="margin-bottom: 2rem; border-left: 4px solid var(--primary);">
+        <h3 style="font-family: var(--font-heading); font-size: 1.3rem; margin-bottom: 1rem; color: var(--primary); display: flex; align-items: center; gap: 0.5rem;">
+          <span>🗺️</span> KHUNG 1: SƠ ĐỒ KIẾN TRÚC MÁY TRẠM ĐA TẦNG (MULTI-ENGINE DEFENSE PIPELINE)
+        </h3>
+        <p style="color: var(--text-muted); margin-bottom: 1.5rem;">
+          Hệ thống được thiết kế theo mô hình điều phối phân tầng (Dispatcher Pattern) tương tự các giải pháp EDR / Antivirus hiện đại:
+        </p>
+        
+        <div style="background: rgba(15, 23, 42, 0.8); padding: 1.5rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle); font-family: var(--font-mono); font-size: 0.85rem; line-height: 1.8;">
+          [ Tệp tin tải lên / Chọn từ thiết bị ]<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;│<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;▼<br>
+          &nbsp;&nbsp;<strong>BƯỚC 1:</strong> Xác thực Magic Bytes & Kiểm tra Giả mạo đuôi (Extension Spoofing Detection)<br>
+          &nbsp;&nbsp;<strong>BƯỚC 2:</strong> Tính mã băm (MD5 / SHA-256) & Đo độ hỗn loạn dữ liệu (Shannon Entropy)<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;│<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;├─► <strong>Định dạng PE (EXE, DLL, SYS):</strong> Gọi <code>parsePE()</code> ➔ Mô hình Random Forest PE (Acc: 97.4%)<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;├─► <strong>Định dạng PDF:</strong> Gọi <code>parsePDF()</code> ➔ Mô hình Random Forest PDF (Acc: 100%)<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;├─► <strong>Định dạng Khác:</strong> Động cơ Heuristic & Phân tích Shannon Entropy chống Ransomware<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;│<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;▼<br>
+          [ Báo Cáo Bảo Mật Toàn Diện & Xuất Dữ Liệu JSON / PDF ]
+        </div>
+      </div>
+
+      <!-- KHUNG 2: BỘ DỮ LIỆU DATASETS -->
+      <div style="margin-bottom: 1rem;">
+        <h3 style="font-family: var(--font-heading); font-size: 1.25rem; color: #fff; display: flex; align-items: center; gap: 0.5rem;">
+          <span>📦</span> KHUNG 2: TỔNG QUAN 3 BỘ DỮ LIỆU HUẤN LUYỆN (DATASETS)
+        </h3>
+      </div>
+
+      <div class="models-overview-grid">
+        <div class="glass-card">
+          <h4 style="color: var(--primary); margin-bottom: 0.5rem;">Dataset 1: Windows PE</h4>
+          <p style="font-size: 0.85rem; color: var(--text-muted);">
+            Bộ dữ liệu 1.156 mẫu PE gồm 25 thuộc tính quan trọng: SizeOfCode, AddressOfEntryPoint, Section Entropy, DllCharacteristics, Imports, Exports...
+          </p>
+        </div>
+        <div class="glass-card">
+          <h4 style="color: var(--safe); margin-bottom: 0.5rem;">Dataset 2: Contagio PDF</h4>
+          <p style="font-size: 0.85rem; color: var(--text-muted);">
+            Trích xuất từ nguồn học thuật Contagio Dump qua các công cụ PDFiD, PDF-parser với 27 đặc trưng cấu trúc (/JavaScript, /OpenAction, /XFA, Stream...).
+          </p>
+        </div>
+        <div class="glass-card">
+          <h4 style="color: #c084fc; margin-bottom: 0.5rem;">Dataset 3: 100k Behavior</h4>
+          <p style="font-size: 0.85rem; color: var(--text-muted);">
+            Tập dữ liệu lớn 100.000 bản ghi giám sát 33 chỉ số tiến trình hệ điều hành (Virtual memory, context switch, page faults) cân bằng hoàn hảo 50k - 50k.
+          </p>
+        </div>
       </div>
 
     </section>

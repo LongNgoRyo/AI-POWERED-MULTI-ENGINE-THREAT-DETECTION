@@ -424,7 +424,7 @@ function parsePDF(bytes) {
     "/JS (Mã nhúng ngắn)": jsShort,
     "/JavaScript (Script ngầm)": jsCount,
     "/OpenAction (Tự động kích hoạt)": openAction,
-    "/Launch (Thực thi shell command)": launchCount,
+    "/Launch (Chạy lệnh shell)": launchCount,
     "/XFA (Form khai thác)": xfaCount,
     "obj (Số đối tượng PDF)": objCount,
     "endobj": endobjCount,
@@ -1082,6 +1082,7 @@ function triggerXorQuarantineDownload(scanResult) {
 function triggerCdrDisarmDownload(scanResult) {
   const bytes = scanResult.raw_bytes;
   if (!bytes) {
+    // If demo preset without raw bytes, build synthetic clean PDF
     const cleanPdfText = "%PDF-1.4\n1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n2 0 obj\n<< /Type /Pages /Kids [3 0 R] /Count 1 >>\nendobj\n3 0 obj\n<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R >>\nendobj\n4 0 obj\n<< /Length 55 >>\nstream\nBT /F1 12 Tf 100 700 TD (SANITIZED CLEAN DOCUMENT BY MALWAREGUARDIAN AI) Tj ET\nendstream\nendobj\nxref\n0 5\n0000000000 65535 f \n0000000009 00000 n \n0000000058 00000 n \n0000000115 00000 n \n0000000213 00000 n \ntrailer\n<< /Size 5 /Root 1 0 R >>\nstartxref\n318\n%%EOF";
     const blob = new Blob([cleanPdfText], { type: "application/pdf" });
     const url = URL.createObjectURL(blob);
